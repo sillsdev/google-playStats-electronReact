@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
 //  import { Link } from 'react-router-dom';
-//  import styles from './LoginForm.css';
+//  import styles from './UpdateStateInHome.css';
 
-class LoginForm extends Component {
+class UpdateStateInHome extends Component {
   props: {
     onTryText: () => void,
     onChangeTextToHome: () => void,
@@ -34,7 +34,7 @@ class LoginForm extends Component {
     const { textToHome } = this.props;
     return (
       <div className="panel panel-primary">
-        <div className="panel-heading apt-addheading">Was Login. Now see how text fields are handled</div>
+        <div className="panel-heading apt-addheading">UpdateStateInHome....see how text fields are handled</div>
         <br /> <p> <i>Blah blah</i> </p>
         <div className="panel-body">
           <form className="form-signin form-horizontal" onSubmit={this.handleSubmit}>
@@ -86,4 +86,4 @@ onEmailChange,
 onPasswordChange,
 */
 
-export default LoginForm;
+export default UpdateStateInHome;

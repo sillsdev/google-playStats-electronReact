@@ -12,3 +12,12 @@ apm install editorconfig es6-javascript atom-ternjs javascript-snippets linter l
 ========================================================================
 npm start      to launch the application
 npm run dev    to launch the application with inspect mode (can also see the react chrome extension which gives the ability to see react variable values)
+
+
+********* NOTE *******
+to ensure changes get into the running build
+first do
+$ npm start
+then
+$ npm run dev
+I ran into issues where just doing (npm run dev) did not have the latest changes in it.

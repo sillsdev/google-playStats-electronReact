@@ -10,6 +10,7 @@ import appStorage from 'electron-json-storage';
 
 import jestpadded from './jest-padded-90.png';
 import SelectWbtStatement from '../components/SelectWbtStatement';
+import UpdateStateInHome from '../components/UpdateStateInHome';
 
 const app = electron.remote;
 const dialog = app.dialog;
@@ -28,6 +29,8 @@ export default class Home extends Component {
   constructor() {
     super();
     this.state = {
+      inputText: 'this is something',
+      textInHome: 'text In Home',
       someStateVariable: 'just a place holder for demo of structure',
     };
   }
@@ -61,6 +64,11 @@ export default class Home extends Component {
           <h1>Hi there we have a very simple React in Electron App</h1>
           <SelectWbtStatement
             onTransactionDate={(transactionDate) => this.handleTransactionDate(transactionDate)}
+          />
+          <UpdateStateInHome
+            onTryText={(tryText) => this.handleTryText(tryText)}
+            textToHome={this.state.textInHome}
+            onChangeTextToHome={this.mainOnChangeTextToHome}
           />
         </div>
       </div>
