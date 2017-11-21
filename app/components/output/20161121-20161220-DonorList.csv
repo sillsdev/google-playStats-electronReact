@@ -1,0 +1,32 @@
+
+[ORGANIZATION]
+Name=Wycliffe Canada
+
+Abbreviation=WBTC
+Code=WBT-CAD
+DefaultCurrencyCode=CAD
+[DONORS]
+"DISPLAY_DATE","PEOPLE_ID","ACCT_NAME","PERSON_TYPE","LAST_NAME_ORG","FIRST_NAME","MIDDLE_NAME","TITLE","SUFFIX","SP_LAST_NAME","SP_FIRST_NAME","SP_MIDDLE_NAME","SP_TITLE","SP_SUFFIX","ADDR1","ADDR2","ADDR3","ADDR4","CITY","STATE","ZIP","COUNTRY","CNTRY_DESCR","ADDR_CHANGED","PHONE","PHONE_CHANGED"
+"11/24/2016","K5608","Gordon Weima","","Weima","Gordon","","","","","","","","","7 Foxglove Pl","""","","","Nepean ","ON","K2R 1B2","CANADA","CANADA","","",""
+"11/29/2016","K21667","Alice Dekleer","","Dekleer","Alice","","","","","","","","","410-24 Chapel St","""","","","Georgetown ","ON","L7G 6A7","CANADA","CANADA","","",""
+"12/1/2016","K21955","Martin &amp; Alice Kaldeway","","Kaldeway","Martin &amp; Alice","","","","","","","","","1011 Aspen Dr","""","","","Brockville ","ON","K6V 7G2","CANADA","CANADA","","",""
+"12/1/2016","K14404","John &amp; Mildred Baptist","","Baptist","John &amp; Mildred","","","","","","","","","30 Winters Lane","""","","","Seguin ","ON","P2A 2W8","CANADA","CANADA","","",""
+"12/1/2016","K12186","Ad Goosens","","Goosens","Ad","","","","","","","","","1083 Bridlewood Dr","""","","","Brockville ","ON","K6V 7G2","CANADA","CANADA","","",""
+"12/1/2016","K992","Martin and Gertie Dieleman","","Dieleman","Martin and Gertie","","","","","","","","","5596 Egremont Drive","R.R.#1","","","Ilderton ","ON","N0M 2A0","CANADA","CANADA","","",""
+"12/5/2016","K21666","Clinton &amp; Sherilyn Heppell","","Heppell","Clinton &amp; Sherilyn","","","","","","","","","2982 190 St","""","","","Surrey ","BC","V3S 9V2","CANADA","CANADA","","",""
+"12/8/2016","K41298","Jennifer Feenstra","","Feenstra","Jennifer","","","","","","","","","640 Derbyshire Point Lane","""","","","Athens ","ON","K0E 1B0","CANADA","CANADA","","",""
+"12/15/2016","K8878","Margarita Ho","","Ho","Margarita","","","","","","","","","56 Barford Rd","""","","","Etobicoke ","ON","M9W 4H4","CANADA","CANADA","","",""
+"12/15/2016","K39712","Heppell Family Foundation","","Foundation","Heppell Family","","","","","","","","","3788 184 St","""","","","Surrey ","BC","V3Z 1B8","CANADA","CANADA","","",""
+"12/20/2016","K9687","Maranatha CRC - Woodstock","","Woodstock","Maranatha CRC -","","","","","","","","","735 Frontenac Cres","""","","","Woodstock ","ON","N4V 0B1","CANADA","CANADA","","",""
+"11/24/2016","K4113","Clarence &amp; Anna Tiemstra","","Tiemstra","Clarence &amp; Anna","","","","","","","","","5403 47 St","""","","","Lacombe ","AB","T4L 1H5","CANADA","CANADA","","","",
+"11/28/2016","K4337","Hal Willems","","Willems","Hal","","","","","","","","","263 Drysdale Blvd","""","","","Kelowna ","BC","V1V 1P5","CANADA","CANADA","","","",
+"12/1/2016","K40944","George Vanderwerf","","Vanderwerf","George","","","","","","","","","41-1871 Oxford Ave","""","","","Brockville ","ON","K6V 7B5","CANADA","CANADA","","","",
+"12/1/2016","K21384","Paul &amp; Shirley Weme","","Weme","Paul &amp; Shirley","","","","","","","","","21658 40 Ave","""","","","Langley ","BC","V2Z 1N7","CANADA","CANADA","","","",
+"12/1/2016","K17446","Eldon &amp; Phyllis Lehman","","Lehman","Eldon &amp; Phyllis","","","","","","","","","21 Village Green Dr","""","","","Guelph ","ON","N1G 4X7","CANADA","CANADA","","","",
+"12/1/2016","K8778","Iain &amp; Bonnie Mair","","Mair","Iain &amp; Bonnie","","","","","","","","","246-32691 Garibaldi Dr","""","","","Abbotsford ","BC","V2T 5T7","CANADA","CANADA","","","",
+"12/5/2016","K2910","Gem Cabinets Ltd","","Ltd","Gem Cabinets","","","","","","","","","14019 128 Ave NW","""","","","Edmonton ","AB","T5L 3H3","CANADA","CANADA","","","",
+"12/8/2016","K2986","M Jacob &amp; Corrie M Groenenberg","","Groenenberg","M Jacob &amp; Corrie M","","","","","","","","","8650 Centennial Rd","RR 2 Stn Main","","","St Thomas ","ON","N5P 3S6","CANADA","CANADA","","","",
+"12/15/2016","K21715","Mike &amp; Eva De Vries","","Vries","Mike &amp; Eva De","","","","","","","","","31-101 Southgate Pky","""","","","St Thomas ","ON","N5R 6L5","CANADA","CANADA","","","",
+"12/15/2016","K21443","Southridge Fellowship Baptist Church","","Church","Southridge Fellowship Baptist","","","","","","","","","22756 48 Ave","""","","","Langley ","BC","V2Z 2T6","CANADA","CANADA","","","",
+"12/15/2016","K2662","Marinus &amp; Christine Dubbeldam","","Dubbeldam","Marinus &amp; Christine","","","","","","","","","407-35 Kingknoll Dr","""","","","Brampton ","ON","L6Y 5G5","CANADA","CANADA","","","",
+"12/20/2016","K7872","Beverley Jarvis","","Jarvis","Beverley","","","","","","","","","1 Woodpark Rd","""","","","Toronto ","ON","M9P 1L9","CANADA","CANADA","","","",
