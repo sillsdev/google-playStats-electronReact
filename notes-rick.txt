@@ -21,3 +21,7 @@ $ npm start
 then
 $ npm run dev
 I ran into issues where just doing (npm run dev) did not have the latest changes in it.
+
+------------------------
+how to use Papaparse
+https://stackoverflow.com/questions/42628426/read-local-csv-with-relative-path-in-reactjs
