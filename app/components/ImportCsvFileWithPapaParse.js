@@ -24,8 +24,8 @@ class ImportCsvFileWithPapaParse extends Component {
     ethnologueCode: string,
     country: string,
     population: number,
-    btDonorFile: string,
-    wbtGiftsFile: string
+    csvOutPut1: string,
+    csvOutPut2: string
   }
   constructor() {
     super();
@@ -41,8 +41,8 @@ class ImportCsvFileWithPapaParse extends Component {
       ethnologueCode: "djk",
       country: "Suriname",
       population: 39700,
-      wbtDonorFile: "nada",
-      wbtGiftsFile: "nada dada baba"
+      csvOutPut1: "nada",
+      csvOutPut2: "nada dada baba"
     };
   }
   readCsvFile = () => {
@@ -50,15 +50,15 @@ class ImportCsvFileWithPapaParse extends Component {
     const filename = this.state.csvFile;
     console.log('filename is');
     console.log(filename);
-    const subfileName = filename.replace(/^.*[\\\/]/, '').substring(16, 34);
+    const subfileName = filename.replace(/^.*[\\\/]/, '').substring(9, filename.length-3);
     console.log('subfileName is');
     console.log(subfileName);
-    const donorfile = `${subfileName}DonorList.csv`;
-    console.log('donorfile is');
-    console.log(donorfile);
-    const giftfile = `${subfileName}Gifts.csv`;
-    console.log('giftfile is');
-    console.log(giftfile);
+    const out1file = `${subfileName}--Output1.csv`;
+    console.log('out1file is');
+    console.log(out1file);
+    const out2file = `${subfileName}--Output2.csv`;
+    console.log('out2file is');
+    console.log(out2file);
     console.log('filename is==> ' + filename);
     fs.readFile(filename, (err, html) => {
       let jqueryHtml;
@@ -76,39 +76,37 @@ class ImportCsvFileWithPapaParse extends Component {
         //----------------------------------------------------------------------------
         //------------Open Donor File  and Write to it-------------------------------------
         //----------------------------------------------------------------------------
-        const donorFileName = `./app/components/output/${donorfile}`;
-        this.setState({ wbtDonorFile: donorFileName });
-        const outputFileDonors = fs.createWriteStream(donorFileName, {flags: 'a'});
-        outputFileDonors.write('\n');
-        outputFileDonors.write('[ORGANIZATION]\n');
-        outputFileDonors.write('Name=Wycliffe Canada\n');
-        outputFileDonors.write('\n');
-        outputFileDonors.write('Abbreviation=WBTC\n');
+        const out1fileName = `./app/components/output/${out1file}`;
+        this.setState({ csvOutPut1: out1fileName });
+        const output1CsvFile = fs.createWriteStream(out1fileName, {flags: 'a'});
+        output1CsvFile.write('\n');
+        output1CsvFile.write('[ORGANIZATION]\n');
+        output1CsvFile.write('Name=Wycliffe Canada\n');
+        output1CsvFile.write('\n');
+        output1CsvFile.write('Abbreviation=WBTC\n');
         //----------------------------------------------------------------------------
         //------------Open Gifts File  and Write to it-------------------------------------
         //----------------------------------------------------------------------------
-        const giftsFileName = `./app/components/output/${giftfile}`;
-        this.setState({ wbtGiftsFile: giftsFileName });
-        const outputFileGifts = fs.createWriteStream(giftsFileName, {flags: 'a'});
-        outputFileGifts.write('[GIFTS]\n');
-        outputFileGifts.write('"PEOPLE_ID","ACCT_NAME","DISPLAY_DATE","AMOUNT","DONATION_ID","DESIGNATION","MEMO","MOTIVATION","PAYMENT_METHOD"\n');
+        const out2fileName = `./app/components/output/${out2file}`;
+        this.setState({ csvOutPut2: out2fileName });
+        const output2CsvFile = fs.createWriteStream(out2fileName, {flags: 'a'});
+        output2CsvFile.write('[GIFTS]\n');
+        output2CsvFile.write('"PEOPLE_ID","ACCT_NAME","DISPLAY_DATE","AMOUNT","DONATION_ID","DESIGNATION","MEMO","MOTIVATION","PAYMENT_METHOD"\n');
         let accountRecord = 'some account record information......';
         let giftFromSupporter = 'some text for a place holder';
         let donationId = '';
 
         let addressToOutput = 'some address to output';
 
-        //giftFromSupporter = `"${tntUserIdLp}","${tntAcctName}","${displayDate}","${amountDtlp}","${donationId}","51361","","Unknown","${methodDtLp}"`;
-        outputFileGifts.write(giftFromSupporter);
-        outputFileGifts.write('\n');
-        outputFileDonors.write(accountRecord);
-        outputFileDonors.write(addressToOutput);
-        outputFileDonors.write('\n');
+        output2CsvFile.write('\n');
+        output1CsvFile.write(accountRecord);
+        output1CsvFile.write(addressToOutput);
+        output1CsvFile.write('\n');
 
         // ============================================================
         // ================================================================
-        outputFileDonors.end(); // close string
-        outputFileGifts.end(); // close file
+        output1CsvFile.end(); // close string
+        output2CsvFile.end(); // close file
         //----------------------------------------------------------------------------
         //----------------------------------------------------------------------------
         //----------------------------------------------------------------------------
@@ -122,10 +120,10 @@ class ImportCsvFileWithPapaParse extends Component {
     const fileNames = dialog.showOpenDialog();
     if (fileNames === undefined) {
       console.log('inside selectCsvFile No file selected');
-      this.setState({ wbtStatementFile: '' });
+      this.setState({ csvFile: '' });
     } else {
       // console.log('going to set the filename and boolean' + fileNames);
-      this.setState({ wbtStatementFile: fileNames[0] });
+      this.setState({ csvFile: fileNames[0] });
     }
     console.log('end of selectCsvFile');
   }
@@ -179,7 +177,7 @@ class ImportCsvFileWithPapaParse extends Component {
           <form className="form" onSubmit={this.localHandleSend}>
             <div className="form-group">
               <label htmlFor="wbtStatementFile">Show Scripture Apps Download Stats</label>
-              <div className="form-text" id="wbtStatementFileId" >{this.state.wbtStatementFile}</div>
+              <div className="form-text" id="csvFileId" >{this.state.csvFile}</div>
               <div className="col-sm-offset-3 col-sm-9">
                 <div className="pull-right">
                   <button
@@ -232,10 +230,10 @@ class ImportCsvFileWithPapaParse extends Component {
               </div>
             </div>
             <div className="form-group">
-              <label htmlFor="wbtDonorFile">output DonorFile</label>
-              <div className="form-text" id="wbtDonorFileId" >{this.state.wbtDonorFile}</div>
-              <label htmlFor="wbtGiftsFile">output GiftsFile</label>
-              <div className="form-text" id="wbtGiftsFileId" >{this.state.wbtGiftsFile}</div>
+              <label htmlFor="csvOutPut1">Output File 1</label>
+              <div className="form-text" id="csvOutPut1-Id" >{this.state.csvOutPut1}</div>
+              <label htmlFor="csvOutPut2">Output File 2</label>
+              <div className="form-text" id="csvOutPut2-Id" >{this.state.csvOutPut2}</div>
             </div>
           </form>
         </div>
