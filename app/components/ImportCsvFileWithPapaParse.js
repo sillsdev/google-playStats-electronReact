@@ -27,7 +27,8 @@ class ImportCsvFileWithPapaParse extends Component {
     population: number,
     csvOutPut1: string,
     csvOutPut2: string,
-    jsonButtonClicked: boolean
+    jsonButtonClicked: boolean,
+    toggleJsonFileDataUsed: boolean
   }
   constructor() {
     super();
@@ -45,7 +46,8 @@ class ImportCsvFileWithPapaParse extends Component {
       population: 39700,
       csvOutPut1: "nada",
       csvOutPut2: "nada dada baba",
-      jsonButtonClicked: false
+      jsonButtonClicked: false,
+      toggleJsonFileDataUsed: false
     };
   }
   readCsvFile = () => {
@@ -135,13 +137,28 @@ class ImportCsvFileWithPapaParse extends Component {
 
     console.log("SABprojectsData.json");
     console.log(jsonData);
-    const objFromData = jsonData[0];
+    let objFromData;
+    if (this.state.toggleJsonFileDataUsed){
+      this.setState({ toggleJsonFileDataUsed: false });
+       objFromData = jsonData[1];
+    } else {
+      this.setState({ toggleJsonFileDataUsed: true });
+      objFromData = jsonData[0];
+    }
     console.log("first record from json data file");
     console.log(objFromData);
     console.log(objFromData.packageName);
     console.log(objFromData.population);
     this.setState({ jsonButtonClicked: true });
     this.setState({ packageName: objFromData.packageName });
+    this.setState({ totalUserInstalls: objFromData.totalUserInstalls });
+    this.setState({ activeDeviceInstalls: objFromData.activeDeviceInstalls });
+    this.setState({ monthYear: objFromData.monthYear });
+    this.setState({ monthUserInstalls: objFromData.monthUserInstalls });
+    this.setState({ monthUserUninstalls: objFromData.monthUserUninstalls });
+    this.setState({ appTitle: objFromData.appTitle });
+    this.setState({ ethnologueCode: objFromData.ethnologueCode });
+    this.setState({ country: objFromData.country });
     this.setState({ population: objFromData.population });
     console.log('end of readJsonDataFile');
   }
