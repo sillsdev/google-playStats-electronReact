@@ -1,4 +1,4 @@
-# dbl-upldr-electron-react-simmering
+# # google-playStats-electronReact
 
 ## Install
 
@@ -7,7 +7,7 @@
 First, clone the repo via git:
 
 ```bash
-git clone --depth=1 https://github.com/rick-maclean/dbl-upldr-electron-react-simmering your-project-name
+git clone --depth=1 https://github.com/rick-maclean/google-playStats-electronReact your-project-name
 ```
 
 And then install dependencies.
