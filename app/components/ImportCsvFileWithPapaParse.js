@@ -10,6 +10,7 @@ const app = electron.remote;
 const dialog = app.dialog;
 const fs = require('fs');
 const fsOutput = require('fs');
+const jsonData = require('./SABprojectsData.json');
 
 class ImportCsvFileWithPapaParse extends Component {
   state: {
@@ -25,7 +26,8 @@ class ImportCsvFileWithPapaParse extends Component {
     country: string,
     population: number,
     csvOutPut1: string,
-    csvOutPut2: string
+    csvOutPut2: string,
+    jsonButtonClicked: boolean
   }
   constructor() {
     super();
@@ -42,7 +44,8 @@ class ImportCsvFileWithPapaParse extends Component {
       country: "Suriname",
       population: 39700,
       csvOutPut1: "nada",
-      csvOutPut2: "nada dada baba"
+      csvOutPut2: "nada dada baba",
+      jsonButtonClicked: false
     };
   }
   readCsvFile = () => {
@@ -127,6 +130,21 @@ class ImportCsvFileWithPapaParse extends Component {
     }
     console.log('end of selectCsvFile');
   }
+  readJsonDataFile = () => {
+    console.log('called readJsonDataFile');
+
+    console.log("SABprojectsData.json");
+    console.log(jsonData);
+    const objFromData = jsonData[0];
+    console.log("first record from json data file");
+    console.log(objFromData);
+    console.log(objFromData.packageName);
+    console.log(objFromData.population);
+    this.setState({ jsonButtonClicked: true });
+    this.setState({ packageName: objFromData.packageName });
+    this.setState({ population: objFromData.population });
+    console.log('end of readJsonDataFile');
+  }
   handleTransactionDate = (event) => {
     const target = event.target;
     console.log(target.name);
@@ -158,6 +176,18 @@ class ImportCsvFileWithPapaParse extends Component {
     if (this.state.csvFile === 'no CSV file selected yet') {
       // possibly do something
     } else {
+      packageName = this.state.packageName;
+      totalUserInstalls = this.state.totalUserInstalls;
+      activeDeviceInstalls = this.state.activeDeviceInstalls;
+      monthYear = this.state.monthYear;
+      monthUserInstalls = this.state.monthUserInstalls;
+      monthUserUninstalls = this.state.monthUserUninstalls;
+      appTitle = this.state.appTitle;
+      ethnologueCode = this.state.ethnologueCode;
+      country = this.state.country;
+      population = this.state.population;
+    }
+    if (this.state.jsonButtonClicked) {
       packageName = this.state.packageName;
       totalUserInstalls = this.state.totalUserInstalls;
       activeDeviceInstalls = this.state.activeDeviceInstalls;
@@ -227,14 +257,25 @@ class ImportCsvFileWithPapaParse extends Component {
                     onClick={this.readCsvFile}
                   >Process CSV File</button>&nbsp;
                 </div>
-              </div>
-            </div>
+              </div> {/* className="col-sm-offset-3 col-sm-9" */}
+            </div> {/* form-group */}
+            <div className="form-group">
+              <div className="col-sm-offset-3 col-sm-9">
+                <div className="pull-left">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.readJsonDataFile}
+                  >Get JsonData File</button>&nbsp;
+                </div>
+              </div>  {/* className="col-sm-offset-3 col-sm-9" */}
+            </div> {/* form-group */}
             <div className="form-group">
               <label htmlFor="csvOutPut1">Output File 1</label>
               <div className="form-text" id="csvOutPut1-Id" >{this.state.csvOutPut1}</div>
               <label htmlFor="csvOutPut2">Output File 2</label>
               <div className="form-text" id="csvOutPut2-Id" >{this.state.csvOutPut2}</div>
-            </div>
+            </div> {/*  */}//form-group
           </form>
         </div>
       </div>
