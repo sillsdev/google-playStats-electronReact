@@ -1,0 +1,27 @@
+[
+  {
+    "packageName": "org.scriptureearth.djk.nt.apk",
+    "totalUserInstalls": "384",
+    "activeDeviceInstalls": "111",
+    "monthYear": "10/2017",
+    "monthUserInstalls": "31",
+    "monthUserUninstalls": "26",
+    "appTitle": "Aukaans - Bible",
+    "ethnologueCode": "djk",
+    "country": "Suriname",
+    "population": "39,700"
+  },
+
+  {
+    "packageName": "org.scriptureearth.amk.nt.apk",
+    "totalUserInstalls": "163",
+    "activeDeviceInstalls": "92",
+    "monthYear": "02/2017",
+    "monthUserInstalls": "8",
+    "monthUserUninstalls": "16",
+    "appTitle": "Ambai - Bible",
+    "ethnologueCode": "amk",
+    "country": "Indonesia, Eastern Papua",
+    "population": "10,100"
+  }
+]

@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 class UpdateStateInHome extends Component {
   props: {
     onTryText: () => void,
-    onChangeTextToHome: () => void,
+    onChangeTextToHomeNoDelay: () => void,
     textToHome: string
   };
   state: {
@@ -39,20 +39,20 @@ class UpdateStateInHome extends Component {
         <div className="panel-body">
           <form className="form-signin form-horizontal" onSubmit={this.handleSubmit}>
             <div className="form-group">
-              <label className="col-sm-3 control-label" htmlFor="textToHome">SampleTextToHome</label>
+              <label className="col-sm-3 control-label" htmlFor="textToHome">SampleTextNoDelayInHome</label>
               <div className="col-sm-9">
                 <input
                   name="textToHome"
                   type="text" className="form-control"
                   id="textToHome"
-                  onChange={this.props.onChangeTextToHome}
+                  onChange={this.props.onChangeTextToHomeNoDelay}
                   value={textToHome}
                   placeholder="Text"
                 />
               </div>
             </div>
             <div className="form-group">
-              <label className="col-sm-3 control-label" htmlFor="trytext">SampleTextInput</label>
+              <label className="col-sm-3 control-label" htmlFor="trytext">SampleTextDelays1Char</label>
               <div className="col-sm-9">
                 <input
                   name="tryTextBox"
@@ -70,20 +70,5 @@ class UpdateStateInHome extends Component {
     );
   }
 }
-/*
-props: {
-  onEmailChange: () => void,
-  onPasswordChange: () => void,
-  onTryText: () => void,
-  inputPasswordup: string,
-  inputEmailup: string,
-  inputText: string
-};
-
-inputEmailup,
-inputPasswordup,
-onEmailChange,
-onPasswordChange,
-*/
 
 export default UpdateStateInHome;

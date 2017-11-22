@@ -9,8 +9,8 @@ import appStorage from 'electron-json-storage';
 // import styles from './Home.css';
 
 import jestpadded from './jest-padded-90.png';
-import SelectWbtStatement from '../components/SelectWbtStatement';
 import UpdateStateInHome from '../components/UpdateStateInHome';
+import ImportCsvFileWithPapaParse from '../components/ImportCsvFileWithPapaParse';
 
 const app = electron.remote;
 const dialog = app.dialog;
@@ -29,27 +29,28 @@ export default class Home extends Component {
   constructor() {
     super();
     this.state = {
-      inputText: 'this is something',
-      textInHome: 'text In Home',
+      inputTextDelay1Char: 'this is something',
+      textStateInHomeNoDelay: 'text In Home',
       someStateVariable: 'just a place holder for demo of structure',
+      transactionDateInHome: 'Jan 4 1927'
     };
   }
   handleTryText(inputText) {
     const tryText = inputText;
     console.log('in handleTryText we have inputText as=>' + inputText);
-    this.setState({ inputText: tryText });
+    this.setState({ inputTextDelay1Char: tryText });
   }
   handleTransactionDate(inputText) {
-    // const tryTransactionDate = inputText;
-    console.log('in handleTryText we have inputText as=>' + inputText);
-    // this.setState({ inputText: tryText });
+    const tryTransactionDate = inputText;
+    console.log('in handleTransactionDate we have inputText as=>' + inputText);
+    this.setState({ transactionDateInHome: tryTransactionDate });
   }
-  mainOnChangeTextToHome = (event) => {
+  mainOnChangeTextToHomeNoDelay = (event) => {
     const target = event.target;
     console.log(target.name);
     console.log(target.value);
     if (target.name === 'textToHome') {
-      this.setState({ textInHome: target.value });
+      this.setState({ textStateInHomeNoDelay: target.value });
     }
   }
 
@@ -58,17 +59,16 @@ export default class Home extends Component {
       <div>
         <div className="container">
           <div className="App-header">
-            <h2>Welcome to React</h2>
+            <h2>Welcome to WBT's Scripture Apps Install Stats Viewer</h2>
             <img src={jestpadded} className="img-thumbnail" alt="logo" />
+            <h3>Change to an appropriate Logo....</h3>
           </div>
-          <h1>Hi there we have a very simple React in Electron App</h1>
-          <SelectWbtStatement
-            onTransactionDate={(transactionDate) => this.handleTransactionDate(transactionDate)}
-          />
+          <h2>Hi let's get the SAB Apps' Install Stats</h2>
+          <ImportCsvFileWithPapaParse />
           <UpdateStateInHome
             onTryText={(tryText) => this.handleTryText(tryText)}
-            textToHome={this.state.textInHome}
-            onChangeTextToHome={this.mainOnChangeTextToHome}
+            textToHome={this.state.textStateInHomeNoDelay}
+            onChangeTextToHomeNoDelay={this.mainOnChangeTextToHomeNoDelay}
           />
         </div>
       </div>
