@@ -5,6 +5,8 @@ import React, { Component } from 'react';
 //  import styles from './UpdateStateInHome.css';
 
 var gplay = require('google-play-scraper');
+var exec = require('child_process').exec;
+var cmd=require('node-cmd');
 
 class GooglePlayScraper extends Component {
   props: {
@@ -18,6 +20,21 @@ class GooglePlayScraper extends Component {
     this.state = {
       tryTextLocalState: 'some tryTextLocalState'
     };
+  }
+  gsutilRunACommand = () => {
+    console.log('entering gsutilRunACommand');
+    let command = "gsutil cp -r gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_org.scriptureearth.acrn.nt.apk_*.csv app/components/gsutil-acrn";
+    console.log (command);
+    cmd.run(command);
+    cmd.get(
+        'ls app/components',
+        function(err, data, stderr){
+            console.log('the current dir contains these files :\n\n',data)
+        }
+    );
+
+
+    console.log('leaving gsutilRunACommand');
   }
   runSimpleGooglePlayScraper = () => {
     console.log('entering runSimpleGooglePlayScraper');
@@ -75,6 +92,17 @@ class GooglePlayScraper extends Component {
                     className="btn btn-primary"
                     onClick={this.runSimpleGooglePlayScraper}
                   >runSimpleGooglePlayScraper</button>&nbsp;
+                </div>
+              </div>  {/* className="col-sm-offset-3 col-sm-9" */}
+            </div> {/* form-group */}
+            <div className="form-group">
+              <div className="col-sm-offset-3 col-sm-9">
+                <div className="pull-left">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.gsutilRunACommand}
+                  >gsutilRunACommand</button>&nbsp;
                 </div>
               </div>  {/* className="col-sm-offset-3 col-sm-9" */}
             </div> {/* form-group */}
