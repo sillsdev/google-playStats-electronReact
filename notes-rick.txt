@@ -25,3 +25,7 @@ I ran into issues where just doing (npm run dev) did not have the latest changes
 ------------------------
 how to use Papaparse
 https://stackoverflow.com/questions/42628426/read-local-csv-with-relative-path-in-reactjs
+
+
+-------------------------Loading the json data files
+npm install --save-dev json-loader

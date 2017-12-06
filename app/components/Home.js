@@ -11,6 +11,7 @@ import appStorage from 'electron-json-storage';
 import jestpadded from './jest-padded-90.png';
 import UpdateStateInHome from '../components/UpdateStateInHome';
 import ImportCsvFileWithPapaParse from '../components/ImportCsvFileWithPapaParse';
+import GooglePlayScraper from '../components/GooglePlayScraper';
 
 const app = electron.remote;
 const dialog = app.dialog;
@@ -25,6 +26,7 @@ function persistData(storageKey, jsonData) {
 export default class Home extends Component {
   state: {
     someStateVariable: string,
+    googlePlayScaperProp: string
   }
   constructor() {
     super();
@@ -32,7 +34,8 @@ export default class Home extends Component {
       inputTextDelay1Char: 'this is something',
       textStateInHomeNoDelay: 'text In Home',
       someStateVariable: 'just a place holder for demo of structure',
-      transactionDateInHome: 'Jan 4 1927'
+      transactionDateInHome: 'Jan 4 1927',
+      googlePlayScaperProp: 'connect scraper with Home.js'
     };
   }
   handleTryText(inputText) {
@@ -53,6 +56,14 @@ export default class Home extends Component {
       this.setState({ textStateInHomeNoDelay: target.value });
     }
   }
+  mainonChangepropInHome = (event) => {
+    //could do something
+    console.log('entering mainonChangepropInHome');
+    const target = event.target;
+    console.log(target.name);
+    console.log(target.name);
+    console.log('leaving mainonChangepropInHome');
+  }
 
   render() {
     return (
@@ -65,6 +76,10 @@ export default class Home extends Component {
           </div>
           <h2>Hi let's get the SAB Apps' Install Stats</h2>
           <ImportCsvFileWithPapaParse />
+          <GooglePlayScraper
+            propInHome={this.state.googlePlayScaperProp}
+            onChangepropInHome={this.mainonChangepropInHome}
+          />
           <UpdateStateInHome
             onTryText={(tryText) => this.handleTryText(tryText)}
             textToHome={this.state.textStateInHomeNoDelay}

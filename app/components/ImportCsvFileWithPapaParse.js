@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import electron from 'electron';
 import jquery from 'jquery';
+import Papa from 'papaparse';
+console.log('get papaparse loaded');
 // import PropTypes from 'prop-types';
 //  import { Link } from 'react-router-dom';
 //  import styles from './LoginForm.css';
@@ -11,6 +13,24 @@ const dialog = app.dialog;
 const fs = require('fs');
 const fsOutput = require('fs');
 const jsonData = require('./SABprojectsData.json');
+const csv=require('csvtojson');
+const csvToArray = require("csv-to-array");
+
+
+function doStuff(data) {
+    //Data is usable here
+    console.log(data);
+}
+
+function parseData(url, callBack) {
+    Papa.parse(url, {
+        download: true,
+        dynamicTyping: true,
+        complete: function(results) {
+            callBack(results.data);
+        }
+    });
+}
 
 class ImportCsvFileWithPapaParse extends Component {
   state: {
@@ -28,10 +48,13 @@ class ImportCsvFileWithPapaParse extends Component {
     csvOutPut1: string,
     csvOutPut2: string,
     jsonButtonClicked: boolean,
-    toggleJsonFileDataUsed: boolean
+    toggleJsonFileDataUsed: boolean,
+    oneDataItem : array
   }
   constructor() {
     super();
+    this.readCsvFile = this.readCsvFile.bind(this);
+    this.readCsvFilePapaParseC1 = this.readCsvFilePapaParseC1.bind(this);
     this.state = {
       csvFile: "no CSV file selected yet",
       packageName: 'org.scriptureearth.djk.nt.apk',
@@ -47,79 +70,72 @@ class ImportCsvFileWithPapaParse extends Component {
       csvOutPut1: "nada",
       csvOutPut2: "nada dada baba",
       jsonButtonClicked: false,
-      toggleJsonFileDataUsed: false
+      toggleJsonFileDataUsed: false,
+      oneDataItem: ["2017-10-09","org.mixtecosilacayoapan.mks",3,4,5,6,7,8]
     };
   }
+
   readCsvFile = () => {
     console.log('entering readCsvFile');
     const filename = this.state.csvFile;
     console.log('filename is');
     console.log(filename);
-    const subfileName = filename.replace(/^.*[\\\/]/, '').substring(9, filename.length-3);
-    console.log('subfileName is');
-    console.log(subfileName);
-    const out1file = `${subfileName}--Output1.csv`;
-    console.log('out1file is');
-    console.log(out1file);
-    const out2file = `${subfileName}--Output2.csv`;
-    console.log('out2file is');
-    console.log(out2file);
-    console.log('filename is==> ' + filename);
-    fs.readFile(filename, (err, html) => {
-      let jqueryHtml;
-      if (err) {
-        // handle error
-        console.log('inside readCsvFile fs.readFile has an error');
-      } else {
-        console.log('entering else of fs.readFile   readCsvFile');
-        // console.log(html);
-        jqueryHtml = jquery(html.toString());
-        console.log('jqueryHtml.className===>');
-        console.log(jqueryHtml.className);
-        console.log('jqueryHtml is set to ===> \n');
-        console.log(jqueryHtml);
-        //----------------------------------------------------------------------------
-        //------------Open Donor File  and Write to it-------------------------------------
-        //----------------------------------------------------------------------------
-        const out1fileName = `./app/components/output/${out1file}`;
-        this.setState({ csvOutPut1: out1fileName });
-        const output1CsvFile = fs.createWriteStream(out1fileName, {flags: 'a'});
-        output1CsvFile.write('\n');
-        output1CsvFile.write('[ORGANIZATION]\n');
-        output1CsvFile.write('Name=Wycliffe Canada\n');
-        output1CsvFile.write('\n');
-        output1CsvFile.write('Abbreviation=WBTC\n');
-        //----------------------------------------------------------------------------
-        //------------Open Gifts File  and Write to it-------------------------------------
-        //----------------------------------------------------------------------------
-        const out2fileName = `./app/components/output/${out2file}`;
-        this.setState({ csvOutPut2: out2fileName });
-        const output2CsvFile = fs.createWriteStream(out2fileName, {flags: 'a'});
-        output2CsvFile.write('[GIFTS]\n');
-        output2CsvFile.write('"PEOPLE_ID","ACCT_NAME","DISPLAY_DATE","AMOUNT","DONATION_ID","DESIGNATION","MEMO","MOTIVATION","PAYMENT_METHOD"\n');
-        let accountRecord = 'some account record information......';
-        let giftFromSupporter = 'some text for a place holder';
-        let donationId = '';
-
-        let addressToOutput = 'some address to output';
-
-        output2CsvFile.write('\n');
-        output1CsvFile.write(accountRecord);
-        output1CsvFile.write(addressToOutput);
-        output1CsvFile.write('\n');
-
-        // ============================================================
-        // ================================================================
-        output1CsvFile.end(); // close string
-        output2CsvFile.end(); // close file
-        //----------------------------------------------------------------------------
-        //----------------------------------------------------------------------------
-        //----------------------------------------------------------------------------
-        //----------------------------------------------------------------------------
-      }
+    let columns = ["Date", "Package Name", "Daily Device Installs",
+    "Daily Device Uninstalls", "Daily Device Upgrades", "Total User Installs",
+    "Daily User Installs", "Daily User Uninstalls", "Active Device Installs"];
+    const options = {
+      file: filename,
+      columns: columns
+    };
+    csvToArray(options, function (err, array) {
+      console.log(err || array);
+      //this.callbackSaveArray(err || array); //JS returns the left operand (err) if it is truthy or the right operand  (array) otherwise
     });
+    this.csvToArrayCall();
+
     console.log('leaving readCsvFile');
   }
+  csvToArrayCall = () => {
+    console.log('calling csvToArrayCall=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+');
+    console.log('doing this with this.csvToArrayCall');
+    //this.callbackSaveArray(err || array); //JS returns the left operand (err) if it is truthy or the right operand  (array) otherwise
+  }
+  callbackSaveArray = (finalData) => {
+    console.log('entering inside callbackSaveArray');
+    console.log(finalData);
+    console.log('exiting callbackSaveArray');
+  }
+  readCsvFilePapaParse = () => {
+    console.log('entering readCsvFilePapaParse');
+    const filename = this.state.csvFile;
+    parseData(filename, doStuff);
+
+    console.log('leaving readCsvFilePapaParse');
+  }
+  readCsvFilePapaParseC1 = () => {
+    console.log('entering readCsvFilePapaParseC1');
+    const filename = this.state.csvFile;
+    this.parseDataC1(filename, this.doStuffC1);
+
+    console.log('leaving readCsvFilePapaParseC1');
+  }
+  parseDataC1 = (url, callBack) => {
+      Papa.parse(url, {
+          download: true,
+          dynamicTyping: true,
+          complete: function(results) {
+              callBack(results.data);
+          }
+      });
+  }
+  doStuffC1 = (data) => {
+      //Data is usable here
+      console.log(data);
+      const oneData = data[8];
+      this.setState({ oneDataItem: oneData });
+  }
+
+
   selectCsvFile = () => {
     console.log('called selectCsvFile');
     const fileNames = dialog.showOpenDialog();
@@ -273,6 +289,15 @@ class ImportCsvFileWithPapaParse extends Component {
                     className="btn btn-primary"
                     onClick={this.readCsvFile}
                   >Process CSV File</button>&nbsp;
+                </div>
+              </div> {/* className="col-sm-offset-3 col-sm-9" */}
+              <div className="col-sm-offset-3 col-sm-9">
+                <div className="pull-right">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.readCsvFilePapaParseC1}
+                  >Process CSV File Papa</button>&nbsp;
                 </div>
               </div> {/* className="col-sm-offset-3 col-sm-9" */}
             </div> {/* form-group */}
