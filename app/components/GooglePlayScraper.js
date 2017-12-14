@@ -12,18 +12,81 @@ class GooglePlayScraper extends Component {
   props: {
   };
   state: {
-    tryTextLocalState: string
+    tryTextLocalState: string,
+    scraperSearchResults: array,
+    scraperAppResults: array
   }
   constructor() {
     super();
     this.runSimpleGooglePlayScraper = this.runSimpleGooglePlayScraper.bind(this);
     this.state = {
-      tryTextLocalState: 'some tryTextLocalState'
+      tryTextLocalState: 'some tryTextLocalState',
+      scraperSearchResults: ['a'],
+      scraperAppResults: ['a']
     };
+  }
+  runSimpleGooglePlayScraper = () => {
+    console.log('entering runSimpleGooglePlayScraper');
+
+    //========================== app
+    let results = gplay.app({appId: 'org.scriptureearth.adj.nt.apk'})
+      .then(console.log, console.log);
+
+    gplay.app({appId: 'org.scriptureearth.adj.nt.apk'})
+        .then((value) => {
+          this.setState({ scraperAppResults: value });
+          console.log(value);
+
+        });
+
+    console.log('here are the results =============>');
+    console.log(results);
+
+    //========================== search
+    /*
+    gplay.search({
+      term: "Wycliffe Bible Inc",
+      num: 249
+    }).then(console.log, console.log);
+    */
+
+    /*gplay.search({
+      term: "Belize Kriol - Bible",
+      num: 1
+    }).then(console.log, console.log);
+    */
+
+    results = gplay.search({
+      term: "Belize Kriol - Bible",
+      num: 1
+    }).then((value) => {
+      this.setState({ scraperSearchResults: value });
+      console.log(value);
+    });
+    console.log('here are the results =============>');
+    console.log(results);
+
+
+    //========================== developer
+    // gplay.developer({devId: "Wycliffe Bible Translators, Inc"}).then(console.log);
+
+    //========================== reviews
+    // org.scriptureearth.adj.nt.apk
+    // org.scriptureearth.bzj.nt.apk
+    // org.wycliffe.bzd.pb.apk
+    /*
+    gplay.reviews({
+      appId: 'org.scriptureearth.adj.nt.apk',
+      page: 0,
+      sort: gplay.sort.RATING
+    }).then(console.log, console.log);
+    */
+
+    console.log('leaving runSimpleGooglePlayScraper');
   }
   gsutilRunACommand = () => {
     console.log('entering gsutilRunACommand');
-    let command = "gsutil cp -r gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_org.scriptureearth.acrn.nt.apk_*.csv app/components/gsutil-acrn";
+    let command = "gsutil cp -r gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_org.scriptureearth.acrn.nt.apk_*.csv app/components/gsutil-downloads";
     console.log (command);
     cmd.run(command);
     cmd.get(
@@ -35,37 +98,6 @@ class GooglePlayScraper extends Component {
 
 
     console.log('leaving gsutilRunACommand');
-  }
-  runSimpleGooglePlayScraper = () => {
-    console.log('entering runSimpleGooglePlayScraper');
-
-    //========================== app
-    let results = gplay.app({appId: 'org.scriptureearth.adj.nt.apk'})
-      .then(console.log, console.log);
-
-    console.log('here are the results =============>');
-    console.log(results);
-
-    //========================== search
-    gplay.search({
-      term: "Wycliffe Bible Inc",
-      num: 249
-    }).then(console.log, console.log);
-
-    //========================== developer
-    gplay.developer({devId: "Wycliffe Bible Translators, Inc"}).then(console.log);
-
-    //========================== reviews
-    // org.scriptureearth.adj.nt.apk
-    // org.scriptureearth.bzj.nt.apk
-    // org.wycliffe.bzd.pb.apk
-    gplay.reviews({
-      appId: 'org.scriptureearth.adj.nt.apk',
-      page: 0,
-      sort: gplay.sort.RATING
-    }).then(console.log, console.log);
-
-    console.log('leaving runSimpleGooglePlayScraper');
   }
 
   handleTextLocalState = (event) => {

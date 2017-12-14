@@ -12,6 +12,8 @@ import jestpadded from './jest-padded-90.png';
 import UpdateStateInHome from '../components/UpdateStateInHome';
 import ImportCsvFileWithPapaParse from '../components/ImportCsvFileWithPapaParse';
 import GooglePlayScraper from '../components/GooglePlayScraper';
+import LoadJsonDataFile from '../components/LoadJsonDataFile';
+
 
 const app = electron.remote;
 const dialog = app.dialog;
@@ -85,6 +87,7 @@ export default class Home extends Component {
             textToHome={this.state.textStateInHomeNoDelay}
             onChangeTextToHomeNoDelay={this.mainOnChangeTextToHomeNoDelay}
           />
+          <LoadJsonDataFile />
         </div>
       </div>
     );
