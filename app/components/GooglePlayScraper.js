@@ -12,21 +12,21 @@ class GooglePlayScraper extends Component {
   props: {
   };
   state: {
-    tryTextLocalState: string,
+    googlePlaySearchStr: string,
     scraperSearchResults: array,
     scraperAppResults: array
   }
   constructor() {
     super();
-    this.runSimpleGooglePlayScraper = this.runSimpleGooglePlayScraper.bind(this);
+    this.getGooglePlaySearchResults = this.getGooglePlaySearchResults.bind(this);
     this.state = {
-      tryTextLocalState: 'some tryTextLocalState',
+      googlePlaySearchStr: 'some googlePlaySearchStr',
       scraperSearchResults: ['a'],
       scraperAppResults: ['a']
     };
   }
-  runSimpleGooglePlayScraper = () => {
-    console.log('entering runSimpleGooglePlayScraper');
+  getGooglePlayAppResults = () => {
+    console.log('entering getGooglePlayAppResults');
 
     //========================== app
     let results = gplay.app({appId: 'org.scriptureearth.adj.nt.apk'})
@@ -42,6 +42,31 @@ class GooglePlayScraper extends Component {
     console.log('here are the results =============>');
     console.log(results);
 
+    console.log('leaving getGooglePlayAppResults');
+  } //================= getGooglePlayAppResults
+  getGooglePlayDeveloperResults = () => {
+    console.log('entering getGooglePlayDeveloperResults');
+    //========================== developer
+    gplay.developer({devId: "Wycliffe Bible Translators, Inc"}).then(console.log);
+    console.log('leaving getGooglePlayDeveloperResults');
+  } //================= getGooglePlayDeveloperResults
+  getGooglePlayAppReviews = () => {
+    console.log('entering getGooglePlayAppReviews');
+    //========================== reviews
+    // org.scriptureearth.adj.nt.apk
+    // org.scriptureearth.bzj.nt.apk
+    // org.wycliffe.bzd.pb.apk
+    gplay.reviews({
+      appId: 'org.scriptureearth.adj.nt.apk',
+      page: 0,
+      sort: gplay.sort.RATING
+    }).then(console.log, console.log);
+
+    console.log('leaving getGooglePlayAppReviews');
+  } //================= getGooglePlayAppReviews
+  getGooglePlaySearchResults = () => {
+    console.log('entering getGooglePlaySearchResults');
+
     //========================== search
     /*
     gplay.search({
@@ -55,8 +80,7 @@ class GooglePlayScraper extends Component {
       num: 1
     }).then(console.log, console.log);
     */
-
-    results = gplay.search({
+    let results2 = gplay.search({
       term: "Belize Kriol - Bible",
       num: 1
     }).then((value) => {
@@ -64,25 +88,9 @@ class GooglePlayScraper extends Component {
       console.log(value);
     });
     console.log('here are the results =============>');
-    console.log(results);
+    console.log(results2);
 
-
-    //========================== developer
-    // gplay.developer({devId: "Wycliffe Bible Translators, Inc"}).then(console.log);
-
-    //========================== reviews
-    // org.scriptureearth.adj.nt.apk
-    // org.scriptureearth.bzj.nt.apk
-    // org.wycliffe.bzd.pb.apk
-    /*
-    gplay.reviews({
-      appId: 'org.scriptureearth.adj.nt.apk',
-      page: 0,
-      sort: gplay.sort.RATING
-    }).then(console.log, console.log);
-    */
-
-    console.log('leaving runSimpleGooglePlayScraper');
+    console.log('leaving getGooglePlaySearchResults');
   }
   gsutilRunACommand = () => {
     console.log('entering gsutilRunACommand');
@@ -104,8 +112,8 @@ class GooglePlayScraper extends Component {
     const target = event.target;
     console.log(target.name);
     console.log(target.value);
-    if (target.name === 'tryTextLocalStateBox') {
-      this.setState({ tryTextLocalState: target.value });
+    if (target.name === 'googlePlayAppSearchStringBox') {
+      this.setState({ googlePlaySearchStr: target.value });
     }
   }
   render() {
@@ -122,35 +130,38 @@ class GooglePlayScraper extends Component {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    onClick={this.runSimpleGooglePlayScraper}
-                  >runSimpleGooglePlayScraper</button>&nbsp;
+                    onClick={this.getGooglePlaySearchResults}
+                  >get GooglePlay SearchResults</button>&nbsp;
                 </div>
               </div>  {/* className="col-sm-offset-3 col-sm-9" */}
             </div> {/* form-group */}
             <div className="form-group">
+              <label className="col-sm-3 control-label" htmlFor="googlePlaySearchStr">Google Play App SearchString</label>
+              <div className="col-sm-9">
+                <input
+                  name="googlePlayAppSearchStringBox"
+                  type="text" className="form-control"
+                  id="googlePlayAppSearchString"
+                  onChange={this.handleTextLocalState}
+                  value={this.state.googlePlayAppSearchString}
+                  placeholder="googlePlayAppSearchString"
+                />
+              </div>
+            </div> {/* form-group */}
+            <br></br><br></br>
+            <div className="form-group">
               <div className="col-sm-offset-3 col-sm-9">
-                <div className="pull-left">
+                <div className="pull-right">
                   <button
                     type="button"
                     className="btn btn-primary"
                     onClick={this.gsutilRunACommand}
-                  >gsutilRunACommand</button>&nbsp;
+                  >run gsutil download stat files for </button>&nbsp;
                 </div>
+                <label className="col-sm-offset-6 col-sm-6 control-label" htmlFor="gsutilProjectName">scriptureearth.acrn.nt.apk</label>
               </div>  {/* className="col-sm-offset-3 col-sm-9" */}
+
             </div> {/* form-group */}
-            <div className="form-group">
-              <label className="col-sm-3 control-label" htmlFor="tryTextLocalState">tryTextLocalState</label>
-              <div className="col-sm-9">
-                <input
-                  name="tryTextLocalStateBox"
-                  type="text" className="form-control"
-                  id="tryTextLocalState"
-                  onChange={this.handleTextLocalState}
-                  value={this.state.tryTextLocalState}
-                  placeholder="tryTextLocalState"
-                />
-              </div>
-            </div>
           </form>
         </div>
       </div>
