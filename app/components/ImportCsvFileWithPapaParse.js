@@ -110,14 +110,14 @@ class ImportCsvFileWithPapaParse extends Component {
       // possibly do something
     } else {
       transactionDate = this.state.transactionDate;
-      packageNameFromCsv = this.state.packageNameFromCsv
+      packageNameFromCsv = this.state.packageNameFromCsv;
       totalUserInstalls = this.state.totalUserInstalls;
       activeDeviceInstalls = this.state.activeDeviceInstalls;
     }
 
     return (
       <div className="panel panel-primary">
-        <div className="panel-heading apt-addheading">Select CSV Google Play Store Stats File</div>
+        <div className="panel-heading apt-addheading">Select Downloaded Stats (csv) File and Display Install Stats</div>
         <div className="panel-body">
           <form className="form" onSubmit={this.localHandleSend}>
             <div className="form-group">

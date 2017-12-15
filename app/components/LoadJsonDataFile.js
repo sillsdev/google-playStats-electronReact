@@ -107,7 +107,7 @@ class LoadJsonDataFile extends Component {
 
     return (
       <div className="panel panel-primary">
-        <div className="panel-heading apt-addheading">Select CSV Google Play Store Stats File</div>
+        <div className="panel-heading apt-addheading">Read Json Data Files (toggle)</div>
         <div className="panel-body">
           <form className="form" onSubmit={this.localHandleSend}>
             <div className="form-group">

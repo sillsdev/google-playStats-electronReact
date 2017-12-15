@@ -1,28 +1,18 @@
 // @flow
 import React, { Component } from 'react';
 import electron from 'electron';
-import appStorage from 'electron-json-storage';
 // using an ES6 transpiler, like babel
 // import Img from 'react-image';
 // import logo from './logo.svg';
 //  import { Link } from 'react-router-dom';
 // import styles from './Home.css';
 
-import jestpadded from './jest-padded-90.png';
 import ImportCsvFileWithPapaParse from '../components/ImportCsvFileWithPapaParse';
 import GooglePlayScraper from '../components/GooglePlayScraper';
-import LoadJsonDataFile from '../components/LoadJsonDataFile';
 
 
 const app = electron.remote;
 const dialog = app.dialog;
-
-function persistData(storageKey, jsonData) {
-  console.log('inside persitComponent() and storage_key is ' + storageKey + ', and jsonData is, ' + jsonData);
-  // Write
-  // const appStorage = require('electron-json-storage');
-  appStorage.set(storageKey, jsonData, (error) => { if (error) throw error; });
-}
 
 export default class Home extends Component {
   state: {
@@ -71,17 +61,13 @@ export default class Home extends Component {
       <div>
         <div className="container">
           <div className="App-header">
-            <h2>Welcome to WBT's Scripture Apps Install Stats Viewer</h2>
-            <img src={jestpadded} className="img-thumbnail" alt="logo" />
-            <h3>Change to an appropriate Logo....</h3>
+            <h2>Scripture Apps Install Stats</h2>
           </div>
-          <h2>Hi let's get the SAB Apps' Install Stats</h2>
-          <ImportCsvFileWithPapaParse />
           <GooglePlayScraper
             propInHome={this.state.googlePlayScaperProp}
             onChangepropInHome={this.mainonChangepropInHome}
           />
-          <LoadJsonDataFile />
+          <ImportCsvFileWithPapaParse />
         </div>
       </div>
     );

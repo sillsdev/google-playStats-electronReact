@@ -81,7 +81,9 @@ class GooglePlayScraper extends Component {
     let results = gplay.app({appId: 'org.scriptureearth.adj.nt.apk'})
       .then(console.log, console.log);
 
-    gplay.app({appId: 'org.scriptureearth.adj.nt.apk'})
+    const appPackageName = this.state.packageNameFromScraperSearch;
+    // eg 'org.scriptureearth.adj.nt.apk'
+    gplay.app({appId: appPackageName})
         .then((value) => {
           this.setState({ scraperAppResults: value });
           this.setState({ packageNameFromScraperApp: value.appId });
@@ -118,8 +120,10 @@ class GooglePlayScraper extends Component {
       num: 1
     }).then(console.log, console.log);
     */
+    const searchString = this.state.googlePlaySearchStr;
+    // eg. "Belize Kriol - Bible"
     let results = gplay.search({
-      term: "Belize Kriol - Bible",
+      term: searchString,
       num: 1
     }).then((value) => {
       this.setState({ scraperSearchResults: value });
@@ -143,7 +147,10 @@ class GooglePlayScraper extends Component {
   }
   gsutilRunACommand = () => {
     console.log('entering gsutilRunACommand');
+    let filesToDownload = 'gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_' + this.state.packageNameFromScraperSearch + '_*overview.csv ';
     let command = "gsutil cp -r gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_org.scriptureearth.acrn.nt.apk_*.csv app/components/gsutil-downloads";
+    console.log (command);
+    command = 'gsutil cp -r ' + filesToDownload + 'app/components/gsutil-downloads';
     console.log (command);
     cmd.run(command);
     cmd.get(
@@ -192,101 +199,112 @@ class GooglePlayScraper extends Component {
     androidVersionTextFromScraperApp = this.state.androidVersionTextFromScraperApp;
     developerEmailFromScraperApp = this.state.developerEmailFromScraperApp;
     return (
-      <div className="panel panel-primary">
-        <div className="panel-heading apt-addheading">Select CSV Google Play Store Stats File</div>
-        <div className="panel-body">
-          <form className="form" onSubmit={this.localHandleSend}>
-            <div className="container">
-              <div className="form-group">
-                <label className="col-sm-3 control-label" htmlFor="googlePlaySearchStr">Google Play App SearchString</label>
-                <div className="col-sm-8">
-                  <input
-                    name="googlePlayAppSearchStringBox"
-                    type="text" className="form-control"
-                    id="googlePlayAppSearchString"
-                    onChange={this.handleSearchStringChange}
-                    value={this.state.googlePlayAppSearchString}
-                    placeholder="googlePlayAppSearchString"
-                  />
-                </div>
-              </div> {/* form-group */}
-            </div> {/* container */}
-            <br></br>
-            <div className="container">
-              <div className="btn-toolbar" role="group" aria-label="Basic example">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.getGooglePlaySearchResults}
-                >get GooglePlay SearchResults</button>
-              </div>
-              <div className="form-group">
-                <label className="col-sm-3 control-label" htmlFor="packageNameFromScraperSearch">Package Name</label>
-                <div className="form-text" id="packageNameFromScraperSearch" placeholder="packageNameFromScraperSearch" >{packageNameFromScraperSearch}</div>
-                <br></br>
-                <label className="col-sm-3 control-label" htmlFor="titleFromScraperSearch">App Title</label>
-                <div className="form-text" id="titleFromScraperSearch" placeholder="titleFromScraperSearch" >{titleFromScraperSearch}</div>
-                <br></br>
-                <label className="col-sm-3 control-label" htmlFor="scoreFromScraperSearch">App Review Ratings</label>
-                <div className="form-text" id="scoreFromScraperSearch" placeholder="scoreFromScraperSearch" >{scoreFromScraperSearch} out of 5</div>
-                <br></br>
-                <label className="col-sm-3 control-label" htmlFor="developerFromScraperSearch">App Developer</label>
-                <div className="form-text" id="developerFromScraperSearch" placeholder="developerFromScraperSearch" >{developerFromScraperSearch}</div>
-                <br></br>
-              </div> {/* form-group */}
-              <div className="btn-toolbar" role="group" aria-label="Basic example">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.getGooglePlayAppResults}
-                >get GooglePlay App Full Results</button>
-              </div>
-              <div className="form-group">
-                <label className="col-sm-3 control-label" htmlFor="packageNameFromScraperApp">Package Name: </label>
-                <div className="form-text" id="packageNameFromScraperApp" placeholder="packageNameFromScraperApp" >{packageNameFromScraperApp}</div>
-              </div> {/* form-group */}
-              <div className="form-group">
-                <label className="col-sm-3 control-label" htmlFor="titleFromScraperApp">Title: </label>
-                <div className="form-text" id="titleFromScraperApp" placeholder="titleFromScraperApp" >{titleFromScraperApp}</div>
-              </div> {/* form-group */}
-              <div className="form-group">
-                <label className="col-sm-3 control-label" htmlFor="reviewsFromScraperApp">Number of reviews:</label>
-                <div className="form-text" id="reviewsFromScraperApp" placeholder="reviewsFromScraperApp" >{reviewsFromScraperApp}</div>
-              </div> {/* form-group */}
-              <div className="form-group">
-                <label className="col-sm-3 control-label" htmlFor="scoreNameFromScraperApp">Average score:</label>
-                <div className="form-text" id="scoreNameFromScraperApp" placeholder="scoreNameFromScraperApp" >{scoreNameFromScraperApp}</div>
-              </div> {/* form-group */}
-              <div className="form-group">
-                <label className="col-sm-3 control-label" htmlFor="versionFromScraperApp">Version: </label>
-                <div className="form-text" id="versionFromScraperApp" placeholder="versionFromScraperApp" >{versionFromScraperApp}</div>
-              </div> {/* form-group */}
-              <div className="form-group">
-                <label className="col-sm-3 control-label" htmlFor="androidVersionTextFromScraperApp">Android Version Text: </label>
-                <div className="form-text" id="androidVersionTextFromScraperApp" placeholder="androidVersionTextFromScraperApp" >{androidVersionTextFromScraperApp}</div>
-              </div> {/* form-group */}
-              <div className="form-group">
-                <label className="col-sm-3 control-label" htmlFor="developerEmailFromScraperApp">Developer Email: </label>
-                <div className="form-text" id="developerEmailFromScraperApp" placeholder="developerEmailFromScraperApp" >{developerEmailFromScraperApp}</div>
-              </div> {/* form-group */}
-            </div>
-            <div className="container">
-              <div className="form-group">
-                <div className="col-sm-offset-1 col-sm-9">
-                  <div className="pull-left">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={this.gsutilRunACommand}
-                    >run gsutil download stat files for </button>&nbsp;
+      <div className="panel-group">
+        <div className="panel panel-primary">
+          <div className="panel-heading apt-addheading">Select Play Store App</div>
+          <div className="panel-body">
+            <form className="form" onSubmit={this.localHandleSend}>
+              <div className="container">
+                <div className="form-group">
+                  <label className="col-sm-3 control-label" htmlFor="googlePlaySearchStr">Google Play App SearchString</label>
+                  <div className="col-sm-8">
+                    <input
+                      name="googlePlayAppSearchStringBox"
+                      type="text" className="form-control"
+                      id="googlePlayAppSearchString"
+                      onChange={this.handleSearchStringChange}
+                      value={this.state.googlePlayAppSearchString}
+                      placeholder="googlePlayAppSearchString"
+                    />
                   </div>
-                  <label className="col-sm-6 control-label" htmlFor="gsutilProjectName">scriptureearth.acrn.nt.apk</label>
-                </div>  {/* className="col-sm-offset-3 col-sm-9" */}
-              </div> {/* form-group */}
-            </div>
-          </form>
+                </div> {/* form-group */}
+              </div> {/* container */}
+              <br></br>
+              <div className="container">
+                <div className="btn-toolbar" role="group" aria-label="Basic example">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.getGooglePlaySearchResults}
+                  >get GooglePlay SearchResults</button>
+                </div>
+                <div className="form-group">
+                  <label className="col-sm-3 control-label" htmlFor="packageNameFromScraperSearch">Package Name</label>
+                  <div className="form-text" id="packageNameFromScraperSearch" placeholder="packageNameFromScraperSearch" >{packageNameFromScraperSearch}</div>
+                  <br></br>
+                  <label className="col-sm-3 control-label" htmlFor="titleFromScraperSearch">App Title</label>
+                  <div className="form-text" id="titleFromScraperSearch" placeholder="titleFromScraperSearch" >{titleFromScraperSearch}</div>
+                  <br></br>
+                  <label className="col-sm-3 control-label" htmlFor="scoreFromScraperSearch">App Review Ratings</label>
+                  <div className="form-text" id="scoreFromScraperSearch" placeholder="scoreFromScraperSearch" >{scoreFromScraperSearch} out of 5</div>
+                  <br></br>
+                  <label className="col-sm-3 control-label" htmlFor="developerFromScraperSearch">App Developer</label>
+                  <div className="form-text" id="developerFromScraperSearch" placeholder="developerFromScraperSearch" >{developerFromScraperSearch}</div>
+                  <br></br>
+                </div> {/* form-group */}
+                <div className="btn-toolbar" role="group" aria-label="Basic example">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.getGooglePlayAppResults}
+                  >get GooglePlay App Full Results</button>
+                </div>
+                <div className="form-group">
+                  <label className="col-sm-3 control-label" htmlFor="packageNameFromScraperApp">Package Name: </label>
+                  <div className="form-text" id="packageNameFromScraperApp" placeholder="packageNameFromScraperApp" >{packageNameFromScraperApp}</div>
+                </div> {/* form-group */}
+                <div className="form-group">
+                  <label className="col-sm-3 control-label" htmlFor="titleFromScraperApp">Title: </label>
+                  <div className="form-text" id="titleFromScraperApp" placeholder="titleFromScraperApp" >{titleFromScraperApp}</div>
+                </div> {/* form-group */}
+                <div className="form-group">
+                  <label className="col-sm-3 control-label" htmlFor="reviewsFromScraperApp">Number of reviews:</label>
+                  <div className="form-text" id="reviewsFromScraperApp" placeholder="reviewsFromScraperApp" >{reviewsFromScraperApp}</div>
+                </div> {/* form-group */}
+                <div className="form-group">
+                  <label className="col-sm-3 control-label" htmlFor="scoreNameFromScraperApp">Average score:</label>
+                  <div className="form-text" id="scoreNameFromScraperApp" placeholder="scoreNameFromScraperApp" >{scoreNameFromScraperApp}</div>
+                </div> {/* form-group */}
+                <div className="form-group">
+                  <label className="col-sm-3 control-label" htmlFor="versionFromScraperApp">Version: </label>
+                  <div className="form-text" id="versionFromScraperApp" placeholder="versionFromScraperApp" >{versionFromScraperApp}</div>
+                </div> {/* form-group */}
+                <div className="form-group">
+                  <label className="col-sm-3 control-label" htmlFor="androidVersionTextFromScraperApp">Android Version Text: </label>
+                  <div className="form-text" id="androidVersionTextFromScraperApp" placeholder="androidVersionTextFromScraperApp" >{androidVersionTextFromScraperApp}</div>
+                </div> {/* form-group */}
+                <div className="form-group">
+                  <label className="col-sm-3 control-label" htmlFor="developerEmailFromScraperApp">Developer Email: </label>
+                  <div className="form-text" id="developerEmailFromScraperApp" placeholder="developerEmailFromScraperApp" >{developerEmailFromScraperApp}</div>
+                </div> {/* form-group */}
+              </div>
+            </form>
+          </div>
+        </div>
+        <div className="panel panel-primary">
+          <div className="panel-heading">Download Files For packageName Specified</div>
+          <div className="panel-body">
+            <div className="form-group">
+              <label className="col-sm-3 control-label" htmlFor="packageNameFromScraperSearch">Package Name</label>
+              <div className="form-text" id="packageNameFromScraperSearch" placeholder="packageNameFromScraperSearch" >{packageNameFromScraperSearch}</div>
+            </div> {/* form-group */}
+            <div className="form-group">
+              <div className="col-sm-offset-1 col-sm-9">
+                <div className="pull-right">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.gsutilRunACommand}
+                  >Download</button>&nbsp;
+                </div>
+                <br></br>
+
+              </div>  {/* className="col-sm-offset-3 col-sm-9" */}
+            </div> {/* form-group */}
+          </div>
         </div>
       </div>
+
     );
   }
 }
