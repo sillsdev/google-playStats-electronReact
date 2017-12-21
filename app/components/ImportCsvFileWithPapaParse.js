@@ -15,6 +15,7 @@ const fsOutput = require('fs');
 const jsonData = require('./SABprojectsData.json');
 const csv=require('csvtojson');
 const csvToArray = require("csv-to-array");
+const countries = require("i18n-iso-countries");
 
 
 class ImportCsvFileWithPapaParse extends Component {
@@ -29,6 +30,8 @@ class ImportCsvFileWithPapaParse extends Component {
     countryTransDate: string,
     countryCode: string,
     countryName: string,
+    countryInstalls: string,
+    countryActiveDevices: string,
     packageNameFromCsv: string,
     totalUserInstalls: number,
     activeDeviceInstalls: number
@@ -48,6 +51,8 @@ class ImportCsvFileWithPapaParse extends Component {
       countryTransDate: 'countryTransDate',
       countryCode: 'countryCode',
       countryName: 'countryName',
+      countryInstalls: 'countryInstalls',
+      countryActiveDevices: 'countryActiveDevices',
       packageNameFromCsv: 'packageNameFromCsv',
       totalUserInstalls: -1,
       activeDeviceInstalls: -1
@@ -112,9 +117,17 @@ class ImportCsvFileWithPapaParse extends Component {
       console.log('Package Name: ' + firstEntry[1]);
       console.log('Country: ' + firstEntry[2]);
       this.setState({ countryCode: firstEntry[2] });
-      console.log('Total User Installs: ' + firstEntry[6]);
-      console.log('Active Device Installs: ' + firstEntry[9]);
-      //     this.setState({ activeDeviceInstalls: lastEntry[8] });
+      this.setState({ countryName: countries.getName(firstEntry[2], "en") });
+      this.setState({ countryInstalls: firstEntry[6] });
+      this.setState({ countryActiveDevices: firstEntry[9] });
+      let firstTransactionDate = firstEntry[0];
+      let i = 1;
+      while (data[i][0] === firstTransactionDate) {
+        let row = data[i];
+        console.log('Code: ' + row[2] + ', TotalInstalls: ' + row[6] + ', ActiveDevices: ' + row[9] +", Country => " + countries.getName(row[2], "en") );
+        i++;
+      }
+
   }
 
 
@@ -157,6 +170,8 @@ class ImportCsvFileWithPapaParse extends Component {
     let countryTransDate = 'countryTransDate';
     let countryCode = 'countryCode';
     let countryName = 'countryName';
+    let countryInstalls = 'countryInstalls';
+    let countryActiveDevices = 'countryActiveDevices';
     let packageNameFromCsv = 'packageNameFromCsv';
     let totalUserInstalls = -1;
     let activeDeviceInstalls = -1;
@@ -175,6 +190,8 @@ class ImportCsvFileWithPapaParse extends Component {
       countryTransDate = this.state.countryTransDate;
       countryCode = this.state.countryCode;
       countryName = this.state.countryName;
+      countryInstalls = this.state.countryInstalls;
+      countryActiveDevices = this.state.countryActiveDevices;
     }
 
     return (
@@ -250,6 +267,12 @@ class ImportCsvFileWithPapaParse extends Component {
                     <br></br>
                     <label className="col-sm-6 control-label" htmlFor="countryName">Country Name</label>
                     <div className="form-text" id="countryName" placeholder="countryName" >{countryName}</div>
+                    <br></br>
+                    <label className="col-sm-6 control-label" htmlFor="countryInstalls">Total User Installs</label>
+                    <div className="form-text" id="countryInstalls" placeholder="countryInstalls" >{countryInstalls}</div>
+                    <br></br>
+                    <label className="col-sm-6 control-label" htmlFor="countryActiveDevices">Active Device Installs</label>
+                    <div className="form-text" id="countryActiveDevices" placeholder="countryActiveDevices" >{countryActiveDevices}</div>
                     <br></br>
                   </div> {/* form-group */}
                 </div>
