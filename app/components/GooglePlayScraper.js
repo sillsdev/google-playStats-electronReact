@@ -205,9 +205,11 @@ class GooglePlayScraper extends Component {
           <div className="panel-body">
             <form className="form" onSubmit={this.localHandleSend}>
               <div className="container">
+
+                <br></br>
                 <div className="form-group">
-                  <label className="col-sm-3 control-label" htmlFor="googlePlaySearchStr">Google Play App SearchString</label>
-                  <div className="col-sm-8">
+                  <label className="col-sm-3 control-label" htmlFor="googlePlaySearchStr"><h4>Google Play App Search string (Title)</h4></label>
+                  <div className="col-sm-4">
                     <input
                       name="googlePlayAppSearchStringBox"
                       type="text" className="form-control"
@@ -217,17 +219,17 @@ class GooglePlayScraper extends Component {
                       placeholder="googlePlayAppSearchString"
                     />
                   </div>
+                  <div className="btn-toolbar" role="group" aria-label="Basic example">
+
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.getGooglePlaySearchResults}
+                    >get GooglePlay SearchResults</button>
+                  </div>
                 </div> {/* form-group */}
               </div> {/* container */}
-              <br></br>
               <div className="container">
-                <div className="btn-toolbar" role="group" aria-label="Basic example">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.getGooglePlaySearchResults}
-                  >get GooglePlay SearchResults</button>
-                </div>
                 <div className="form-group">
                   <label className="col-sm-3 control-label" htmlFor="packageNameFromScraperSearch">Package Name</label>
                   <div className="form-text" id="packageNameFromScraperSearch" placeholder="packageNameFromScraperSearch" >{packageNameFromScraperSearch}</div>
@@ -242,13 +244,25 @@ class GooglePlayScraper extends Component {
                   <div className="form-text" id="developerFromScraperSearch" placeholder="developerFromScraperSearch" >{developerFromScraperSearch}</div>
                   <br></br>
                 </div> {/* form-group */}
-                <div className="btn-toolbar" role="group" aria-label="Basic example">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.getGooglePlayAppResults}
-                  >get GooglePlay App Full Results</button>
-                </div>
+              </div>
+              <div className="container">
+                <br></br>
+                <div className="form-group">
+                  <label className="col-sm-3 control-label" htmlFor="googlePlaySearchStr"><h4>Google Play Package Name</h4></label>
+                  <div className="btn-toolbar" role="group" aria-label="Basic example">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.getGooglePlayAppResults}
+                    >get GooglePlay App Full Results</button>
+                  </div>
+                </div> {/* form-group */}
+              </div> {/* container */}
+              <div className="container">
+                <div className="form-group">
+                  <label className="col-sm-3 control-label" htmlFor="packageNameFromScraperSearch">Package Name From Search: </label>
+                  <div className="form-text" id="packageNameFromScraperSearch" placeholder="packageNameFromScraperSearch" >{packageNameFromScraperSearch}</div>
+                </div> {/* form-group */}
                 <div className="form-group">
                   <label className="col-sm-3 control-label" htmlFor="packageNameFromScraperApp">Package Name: </label>
                   <div className="form-text" id="packageNameFromScraperApp" placeholder="packageNameFromScraperApp" >{packageNameFromScraperApp}</div>
@@ -280,29 +294,30 @@ class GooglePlayScraper extends Component {
               </div>
             </form>
           </div>
-        </div>
-        <div className="panel panel-primary">
-          <div className="panel-heading">Download Files For packageName Specified</div>
-          <div className="panel-body">
-            <div className="form-group">
-              <label className="col-sm-3 control-label" htmlFor="packageNameFromScraperSearch">Package Name</label>
-              <div className="form-text" id="packageNameFromScraperSearch" placeholder="packageNameFromScraperSearch" >{packageNameFromScraperSearch}</div>
-            </div> {/* form-group */}
-            <div className="form-group">
-              <div className="col-sm-offset-1 col-sm-9">
-                <div className="pull-right">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.gsutilRunACommand}
-                  >Download</button>&nbsp;
-                </div>
-                <br></br>
+          <div className="panel panel-info">
+            <div className="panel-heading">Download Files For packageName Specified</div>
+            <div className="panel-body">
+              <div className="form-group">
+                <label className="col-sm-3 control-label" htmlFor="packageNameFromScraperSearch">Package Name</label>
+                <div className="form-text" id="packageNameFromScraperSearch" placeholder="packageNameFromScraperSearch" >{packageNameFromScraperSearch}</div>
+              </div> {/* form-group */}
+              <div className="form-group">
+                <div className="col-sm-offset-1 col-sm-9">
+                  <div className="pull-right">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.gsutilRunACommand}
+                    >Download</button>&nbsp;
+                  </div>
+                  <br></br>
 
-              </div>  {/* className="col-sm-offset-3 col-sm-9" */}
-            </div> {/* form-group */}
+                </div>  {/* className="col-sm-offset-3 col-sm-9" */}
+              </div> {/* form-group */}
+            </div>
           </div>
         </div>
+
       </div>
 
     );
