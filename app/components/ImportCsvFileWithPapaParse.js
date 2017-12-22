@@ -8,6 +8,12 @@ console.log('get papaparse loaded');
 //  import { Link } from 'react-router-dom';
 //  import styles from './LoginForm.css';
 
+//import BootstrapTable from 'reactjs-bootstrap-table';
+var ReactTable = require('react-table').default
+//var BootstrapTable = require('reactjs-bootstrap-table').default
+// with es6
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+
 const app = electron.remote;
 const dialog = app.dialog;
 const fs = require('fs');
@@ -194,93 +200,157 @@ class ImportCsvFileWithPapaParse extends Component {
       countryActiveDevices = this.state.countryActiveDevices;
     }
 
+    let columns = [
+      { name: 'firstName' },
+      { name: 'lastName' },
+      { name: 'address' }
+    ];
+    let data = [
+       { id: 1, 'firstName': 'sarah', lastName: 'maclean', address: 'pinebluff'},
+       { id: 2, 'firstName': 'luke', lastName: 'maclean', address: 'arapaho'},
+       { id: 3, 'firstName': 'mark', lastName: 'maclean', address: 'red oak'}
+    ];
+    var products = [{
+      id: 1,
+      name: "Product1",
+      price: 120
+    },
+    {
+      id: 2,
+      name: "Product2",
+      price: 80
+    }];
+
     return (
-      <div className="panel panel-primary">
-        <div className="panel-heading apt-addheading">Scripture App Download Stats</div>
-        <div className="panel-body">
-          <form className="form" onSubmit={this.localHandleSend}>
-            <div className="form-group">
-              <label htmlFor="wbtStatementFile">Select Downloaded (csv) File and Display Stats</label>
-              <br></br><br></br>
-              <div className="panel panel-info">
-                <div className="panel-heading">Display Results from Overview file...</div>
-                <div className="panel-body">
-                  <div className="btn-toolbar" role="group" aria-label="Basic example">
-                    <div className="pull-left">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={this.selectCsvOverviewFile}
-                      >Select ...overview.csv File</button>&nbsp;
+      <div className="container">
+        <div className="panel panel-primary">
+          <div className="panel-heading apt-addheading">Scripture App Download Stats</div>
+          <div className="panel-body">
+            <form className="form" onSubmit={this.localHandleSend}>
+              <div className="form-group">
+                <label htmlFor="wbtStatementFile">Select Downloaded (csv) File and Display Stats</label>
+                <br></br><br></br>
+                <div className="panel panel-info">
+                  <div className="panel-heading">Display Results from Overview file...</div>
+                  <div className="panel-body">
+                    <div className="btn-toolbar" role="group" aria-label="Basic example">
+                      <div className="pull-left">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={this.selectCsvOverviewFile}
+                        >Select ...overview.csv File</button>&nbsp;
+                      </div>
+                      <div className="col-sm-offset-3">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={this.readCsvFilePapaParse}
+                        >Process CSV File Papa</button>&nbsp;
+                      </div>
                     </div>
-                    <div className="col-sm-offset-3">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={this.readCsvFilePapaParse}
-                      >Process CSV File Papa</button>&nbsp;
-                    </div>
+                    <div className="form-text" id="csvOverviewFileId" >{this.state.csvOverviewFile}</div>
+                    <div className="form-group">
+                      <label className="col-sm-6 control-label" htmlFor="transactionDate">Date</label>
+                      <div className="form-text" id="transactionDate" placeholder="transactionDate" >{transactionDate}</div>
+                      <br></br>
+                      <label className="col-sm-6 control-label" htmlFor="packageNameFromCsv">Package Name</label>
+                      <div className="form-text" id="packageNameFromCsv" placeholder="packageNameFromCsv" >{packageNameFromCsv}</div>
+                      <br></br>
+                      <label className="col-sm-6 control-label" htmlFor="totalUserInstalls">Total User Installs</label>
+                      <div className="form-text" id="totalUserInstalls" placeholder="totalUserInstalls" >{totalUserInstalls}</div>
+                      <br></br>
+                      <label className="col-sm-6 control-label" htmlFor="activeDeviceInstalls">Active Device Installs</label>
+                      <div className="form-text" id="activeDeviceInstalls" placeholder="activeDeviceInstalls" >{activeDeviceInstalls}</div>
+                      <br></br>
+                    </div> {/* form-group */}
                   </div>
-                  <div className="form-text" id="csvOverviewFileId" >{this.state.csvOverviewFile}</div>
-                  <div className="form-group">
-                    <label className="col-sm-6 control-label" htmlFor="transactionDate">Date</label>
-                    <div className="form-text" id="transactionDate" placeholder="transactionDate" >{transactionDate}</div>
-                    <br></br>
-                    <label className="col-sm-6 control-label" htmlFor="packageNameFromCsv">Package Name</label>
-                    <div className="form-text" id="packageNameFromCsv" placeholder="packageNameFromCsv" >{packageNameFromCsv}</div>
-                    <br></br>
-                    <label className="col-sm-6 control-label" htmlFor="totalUserInstalls">Total User Installs</label>
-                    <div className="form-text" id="totalUserInstalls" placeholder="totalUserInstalls" >{totalUserInstalls}</div>
-                    <br></br>
-                    <label className="col-sm-6 control-label" htmlFor="activeDeviceInstalls">Active Device Installs</label>
-                    <div className="form-text" id="activeDeviceInstalls" placeholder="activeDeviceInstalls" >{activeDeviceInstalls}</div>
-                    <br></br>
-                  </div> {/* form-group */}
+                </div>
+                <div className="panel panel-info">
+                  <div className="panel-heading">Display Results from Countries file...</div>
+                  <div className="panel-body">
+                    <div className="btn-toolbar" role="group" aria-label="Basic example">
+                      <div className="pull-left">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={this.selectCsvCountryFile}
+                        >Select ...country.csv File</button>&nbsp;
+                      </div>
+                      <div className="col-sm-offset-3">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={this.readCountryCsvFilePapaParse}
+                        >Process country.csv File Papa</button>&nbsp;
+                      </div>
+                    </div>
+                    <div className="form-text" id="csvOverviewFileId" >{this.state.csvCountryFile}</div>
+                    <div className="form-group">
+                      <label className="col-sm-6 control-label" htmlFor="countryTransDate">Date</label>
+                      <div className="form-text" id="countryTransDate" placeholder="countryTransDate" >{countryTransDate}</div>
+                      <br></br>
+                      <label className="col-sm-6 control-label" htmlFor="countryCode">Country Code</label>
+                      <div className="form-text" id="countryCode" placeholder="countryCode" >{countryCode}</div>
+                      <br></br>
+                      <label className="col-sm-6 control-label" htmlFor="countryName">Country Name</label>
+                      <div className="form-text" id="countryName" placeholder="countryName" >{countryName}</div>
+                      <br></br>
+                      <label className="col-sm-6 control-label" htmlFor="countryInstalls">Total User Installs</label>
+                      <div className="form-text" id="countryInstalls" placeholder="countryInstalls" >{countryInstalls}</div>
+                      <br></br>
+                      <label className="col-sm-6 control-label" htmlFor="countryActiveDevices">Active Device Installs</label>
+                      <div className="form-text" id="countryActiveDevices" placeholder="countryActiveDevices" >{countryActiveDevices}</div>
+                      <br></br>
+                    </div> {/* form-group */}
+                  </div>
                 </div>
               </div>
-              <div className="panel panel-info">
-                <div className="panel-heading">Display Results from Countries file...</div>
-                <div className="panel-body">
-                  <div className="btn-toolbar" role="group" aria-label="Basic example">
-                    <div className="pull-left">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={this.selectCsvCountryFile}
-                      >Select ...country.csv File</button>&nbsp;
-                    </div>
-                    <div className="col-sm-offset-3">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={this.readCountryCsvFilePapaParse}
-                      >Process country.csv File Papa</button>&nbsp;
-                    </div>
-                  </div>
-                  <div className="form-text" id="csvOverviewFileId" >{this.state.csvCountryFile}</div>
-                  <div className="form-group">
-                    <label className="col-sm-6 control-label" htmlFor="countryTransDate">Date</label>
-                    <div className="form-text" id="countryTransDate" placeholder="countryTransDate" >{countryTransDate}</div>
-                    <br></br>
-                    <label className="col-sm-6 control-label" htmlFor="countryCode">Country Code</label>
-                    <div className="form-text" id="countryCode" placeholder="countryCode" >{countryCode}</div>
-                    <br></br>
-                    <label className="col-sm-6 control-label" htmlFor="countryName">Country Name</label>
-                    <div className="form-text" id="countryName" placeholder="countryName" >{countryName}</div>
-                    <br></br>
-                    <label className="col-sm-6 control-label" htmlFor="countryInstalls">Total User Installs</label>
-                    <div className="form-text" id="countryInstalls" placeholder="countryInstalls" >{countryInstalls}</div>
-                    <br></br>
-                    <label className="col-sm-6 control-label" htmlFor="countryActiveDevices">Active Device Installs</label>
-                    <div className="form-text" id="countryActiveDevices" placeholder="countryActiveDevices" >{countryActiveDevices}</div>
-                    <br></br>
-                  </div> {/* form-group */}
-                </div>
-              </div>
-            </div>
-          </form>
+            </form>
+          </div>
+
+
         </div>
+        <div className="container">
+            <h2>Hover Rows, bordered, striped</h2>
+            <p>The .table-hover class enables a hover state on table rows:</p>
+            <table className="table table-hover table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>Firstname</th>
+                  <th>Lastname</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>John</td>
+                  <td>Doe</td>
+                  <td><a href="#">john@example.com</a></td>
+                </tr>
+                <tr>
+                  <td>Mary</td>
+                  <td>Moe</td>
+                  <td>mary@example.com</td>
+                </tr>
+                <tr>
+                  <td>July</td>
+                  <td>Dooley</td>
+                  <td>july@example.com</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+            <BootstrapTable data={products}>
+                <TableHeaderColumn isKey dataField='id'>Product ID</TableHeaderColumn>
+                <TableHeaderColumn dataField='name'>Product Name</TableHeaderColumn>
+                <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
+            </BootstrapTable>
+
+
       </div>
+
     );
   }
 }

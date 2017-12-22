@@ -9,6 +9,7 @@ import electron from 'electron';
 
 import ImportCsvFileWithPapaParse from '../components/ImportCsvFileWithPapaParse';
 import GooglePlayScraper from '../components/GooglePlayScraper';
+import Table from '../components/Table';
 
 
 const app = electron.remote;
@@ -68,6 +69,7 @@ export default class Home extends Component {
             onChangepropInHome={this.mainonChangepropInHome}
           />
           <ImportCsvFileWithPapaParse />
+          <Table />
         </div>
       </div>
     );
