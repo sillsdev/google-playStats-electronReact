@@ -177,7 +177,6 @@
     "papaparse": "^4.3.6",
     "react-addons-test-utils": "^15.5.1",
     "react-bootstrap-table": "^4.3.0",
-    "react-table": "^6.7.6",
     "react-test-renderer": "^15.5.4",
     "redux-logger": "^3.0.1",
     "sass-loader": "^6.0.3",

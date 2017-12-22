@@ -8,9 +8,6 @@ console.log('get papaparse loaded');
 //  import { Link } from 'react-router-dom';
 //  import styles from './LoginForm.css';
 
-//import BootstrapTable from 'reactjs-bootstrap-table';
-var ReactTable = require('react-table').default
-//var BootstrapTable = require('reactjs-bootstrap-table').default
 // with es6
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
@@ -201,6 +198,7 @@ class ImportCsvFileWithPapaParse extends Component {
     }
 
     let columns = [
+      { name: 'id' },
       { name: 'firstName' },
       { name: 'lastName' },
       { name: 'address' }
@@ -347,7 +345,6 @@ class ImportCsvFileWithPapaParse extends Component {
                 <TableHeaderColumn dataField='name'>Product Name</TableHeaderColumn>
                 <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
             </BootstrapTable>
-
 
       </div>
 
