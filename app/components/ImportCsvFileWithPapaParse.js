@@ -10,6 +10,7 @@ console.log('get papaparse loaded');
 
 // with es6
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+// http://allenfang.github.io/react-bootstrap-table/start.html
 
 const app = electron.remote;
 const dialog = app.dialog;
@@ -209,14 +210,16 @@ class ImportCsvFileWithPapaParse extends Component {
        { id: 3, 'firstName': 'mark', lastName: 'maclean', address: 'red oak'}
     ];
     var products = [{
-      id: 1,
-      name: "Product1",
-      price: 120
+      code: "us",
+      installs:231,
+      active: 120,
+      country: 'USA'
     },
     {
-      id: 2,
-      name: "Product2",
-      price: 80
+      code: "br",
+      installs:32,
+      active: 29,
+      country: 'Brazil'
     }];
 
     return (
@@ -341,9 +344,10 @@ class ImportCsvFileWithPapaParse extends Component {
           </div>
 
             <BootstrapTable data={products}>
-                <TableHeaderColumn isKey dataField='id'>Product ID</TableHeaderColumn>
-                <TableHeaderColumn dataField='name'>Product Name</TableHeaderColumn>
-                <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
+                <TableHeaderColumn isKey dataField='code'>Country Code</TableHeaderColumn>
+                <TableHeaderColumn dataField='installs'>Total Installs</TableHeaderColumn>
+                <TableHeaderColumn dataField='active'>Active Devices</TableHeaderColumn>
+                <TableHeaderColumn dataField='country'>Country</TableHeaderColumn>
             </BootstrapTable>
 
       </div>
