@@ -223,7 +223,7 @@ class ImportCsvFileWithPapaParse extends Component {
     }];
 
     return (
-      <div className="container">
+    <div className="container">
         <div className="panel panel-primary">
           <div className="panel-heading apt-addheading">Scripture App Download Stats</div>
           <div className="panel-body">
@@ -309,49 +309,16 @@ class ImportCsvFileWithPapaParse extends Component {
               </div>
             </form>
           </div>
-
-
         </div>
         <div className="container">
-            <h2>Hover Rows, bordered, striped</h2>
-            <p>The .table-hover class enables a hover state on table rows:</p>
-            <table className="table table-hover table-striped table-bordered">
-              <thead>
-                <tr>
-                  <th>Firstname</th>
-                  <th>Lastname</th>
-                  <th>Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>John</td>
-                  <td>Doe</td>
-                  <td><a href="#">john@example.com</a></td>
-                </tr>
-                <tr>
-                  <td>Mary</td>
-                  <td>Moe</td>
-                  <td>mary@example.com</td>
-                </tr>
-                <tr>
-                  <td>July</td>
-                  <td>Dooley</td>
-                  <td>july@example.com</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-            <BootstrapTable data={products}>
-                <TableHeaderColumn isKey dataField='code'>Country Code</TableHeaderColumn>
-                <TableHeaderColumn dataField='installs'>Total Installs</TableHeaderColumn>
-                <TableHeaderColumn dataField='active'>Active Devices</TableHeaderColumn>
-                <TableHeaderColumn dataField='country'>Country</TableHeaderColumn>
-            </BootstrapTable>
-
-      </div>
-
+          <BootstrapTable data={products} search searchPlaceholder='input something...' multiColumnSearch>
+              <TableHeaderColumn isKey dataField='code' width='20%'>Country Code</TableHeaderColumn>
+              <TableHeaderColumn dataField='installs' width='20%'>Total Installs</TableHeaderColumn>
+              <TableHeaderColumn dataField='active' width='20%'>Active Devices</TableHeaderColumn>
+              <TableHeaderColumn dataField='country'width='40%'>Country</TableHeaderColumn>
+          </BootstrapTable>
+        </div>
+    </div>
     );
   }
 }

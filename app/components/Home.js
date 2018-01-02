@@ -69,7 +69,6 @@ export default class Home extends Component {
             onChangepropInHome={this.mainonChangepropInHome}
           />
           <ImportCsvFileWithPapaParse />
-          <Table />
         </div>
       </div>
     );
