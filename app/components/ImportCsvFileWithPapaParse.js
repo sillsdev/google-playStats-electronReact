@@ -29,6 +29,7 @@ class ImportCsvFileWithPapaParse extends Component {
     oneDataItem : array,
     csvFileData : array,
     csvCountryFileData : array,
+    countryTableData: array,
 
     transactionDate: string,
     countryTransDate: string,
@@ -42,7 +43,7 @@ class ImportCsvFileWithPapaParse extends Component {
   }
   constructor() {
     super();
-    this.readCsvFilePapaParse = this.readCsvFilePapaParse.bind(this);
+    this.readOverviewCsvFilePP = this.readOverviewCsvFilePP.bind(this);
     this.readCountryCsvFilePapaParse = this.readCountryCsvFilePapaParse.bind(this);
     this.state = {
       csvOverviewFile: "no overview.csv file selected yet",
@@ -50,6 +51,7 @@ class ImportCsvFileWithPapaParse extends Component {
       oneDataItem: ["2017-10-09","org.mixtecosilacayoapan.mks",3,4,5,6,7,8],
       csvFileData: [[1],[2]],
       csvCountryFileData: [[1],[2]],
+      countryTableData: ['some initial state'],
 
       transactionDate: 'transactionDate',
       countryTransDate: 'countryTransDate',
@@ -62,12 +64,12 @@ class ImportCsvFileWithPapaParse extends Component {
       activeDeviceInstalls: -1
     };
   }
-  readCsvFilePapaParse = () => {
-    console.log('entering readCsvFilePapaParse');
+  readOverviewCsvFilePP = () => {
+    console.log('entering readOverviewCsvFilePP');
     const filename = this.state.csvOverviewFile;
     this.parseDataC1(filename, this.doStuffOverview);
 
-    console.log('leaving readCsvFilePapaParse');
+    console.log('leaving readOverviewCsvFilePP');
   }
   parseDataC1 = (url, callBack) => {
       Papa.parse(url, {
@@ -85,18 +87,18 @@ class ImportCsvFileWithPapaParse extends Component {
       console.log( data.length);
       console.log('Column Headings in file: ');
       console.log(data[0]);
-      const lastEntry = data[data.length-2];
+      const firstEntry = data[1];
       console.log('Last entry in file: ');
-      this.setState({ oneDataItem: lastEntry });
-      console.log(lastEntry);
-      console.log(lastEntry[0]);
-      console.log(lastEntry[1]);
-      console.log(lastEntry[5]);
-      console.log(lastEntry[8]);
-      this.setState({ transactionDate: lastEntry[0] });
-      this.setState({ packageNameFromCsv: lastEntry[1] });
-      this.setState({ totalUserInstalls: lastEntry[5] });
-      this.setState({ activeDeviceInstalls: lastEntry[8] });
+      this.setState({ oneDataItem: firstEntry });
+      console.log(firstEntry);
+      console.log(firstEntry[0]);
+      console.log(firstEntry[1]);
+      console.log(firstEntry[5]);
+      console.log(firstEntry[8]);
+      this.setState({ transactionDate: firstEntry[0] });
+      this.setState({ packageNameFromCsv: firstEntry[1] });
+      this.setState({ totalUserInstalls: firstEntry[5] });
+      this.setState({ activeDeviceInstalls: firstEntry[8] });
   }
   readCountryCsvFilePapaParse = () => {
     console.log('entering readCountryCsvFilePapaParse');
@@ -126,12 +128,24 @@ class ImportCsvFileWithPapaParse extends Component {
       this.setState({ countryActiveDevices: firstEntry[9] });
       let firstTransactionDate = firstEntry[0];
       let i = 1;
+      var tableData = [];
+      var tableRow = {};
+      let country='someCountry';
+      let code= 'someCode';
       while (data[i][0] === firstTransactionDate) {
         let row = data[i];
-        console.log('Code: ' + row[2] + ', TotalInstalls: ' + row[6] + ', ActiveDevices: ' + row[9] +", Country => " + countries.getName(row[2], "en") );
+        //console.log('Code: ' + row[2] + ', TotalInstalls: ' + row[6] + ', ActiveDevices: ' + row[9] +", Country => " + countries.getName(row[2], "en") );
+        if (row[2] == "") {
+          tableRow = { "code": "??", "installs": row[6], "active": row[9], "country": "unknown"};
+        } else {
+          tableRow = { "code": row[2], "installs": row[6], "active": row[9], "country": countries.getName(row[2], "en")};
+        }
+        console.log (tableRow);
+        tableData.push(tableRow);
+        //console.log(tableData);
         i++;
       }
-
+      this.setState({ countryTableData: tableData});
   }
 
 
@@ -179,6 +193,13 @@ class ImportCsvFileWithPapaParse extends Component {
     let packageNameFromCsv = 'packageNameFromCsv';
     let totalUserInstalls = -1;
     let activeDeviceInstalls = -1;
+    let countryStats = [
+    {
+      code: "br",
+      installs:32,
+      active: 29,
+      country: 'tempDataBrazil'
+    }];
 
     if (this.state.csvOverviewFile === 'no overview.csv file selected yet') {
       // possibly do something
@@ -196,31 +217,9 @@ class ImportCsvFileWithPapaParse extends Component {
       countryName = this.state.countryName;
       countryInstalls = this.state.countryInstalls;
       countryActiveDevices = this.state.countryActiveDevices;
+      countryStats = this.state.countryTableData;
     }
 
-    let columns = [
-      { name: 'id' },
-      { name: 'firstName' },
-      { name: 'lastName' },
-      { name: 'address' }
-    ];
-    let data = [
-       { id: 1, 'firstName': 'sarah', lastName: 'maclean', address: 'pinebluff'},
-       { id: 2, 'firstName': 'luke', lastName: 'maclean', address: 'arapaho'},
-       { id: 3, 'firstName': 'mark', lastName: 'maclean', address: 'red oak'}
-    ];
-    var products = [{
-      code: "us",
-      installs:231,
-      active: 120,
-      country: 'USA'
-    },
-    {
-      code: "br",
-      installs:32,
-      active: 29,
-      country: 'Brazil'
-    }];
 
     return (
     <div className="container">
@@ -246,7 +245,7 @@ class ImportCsvFileWithPapaParse extends Component {
                         <button
                           type="button"
                           className="btn btn-primary"
-                          onClick={this.readCsvFilePapaParse}
+                          onClick={this.readOverviewCsvFilePP}
                         >Process CSV File Papa</button>&nbsp;
                       </div>
                     </div>
@@ -311,7 +310,7 @@ class ImportCsvFileWithPapaParse extends Component {
           </div>
         </div>
         <div className="container">
-          <BootstrapTable data={products} search searchPlaceholder='input something...' multiColumnSearch>
+          <BootstrapTable data={countryStats} search searchPlaceholder='type items to search for...' multiColumnSearch>
               <TableHeaderColumn isKey dataField='code' width='20%'>Country Code</TableHeaderColumn>
               <TableHeaderColumn dataField='installs' width='20%'>Total Installs</TableHeaderColumn>
               <TableHeaderColumn dataField='active' width='20%'>Active Devices</TableHeaderColumn>
