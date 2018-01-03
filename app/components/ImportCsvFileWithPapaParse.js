@@ -20,50 +20,70 @@ const jsonData = require('./SABprojectsData.json');
 const csv=require('csvtojson');
 const csvToArray = require("csv-to-array");
 const countries = require("i18n-iso-countries");
+var gplay = require('google-play-scraper');
 
 
 class ImportCsvFileWithPapaParse extends Component {
   state: {
+
     csvOverviewFile: string,
     csvCountryFile: string,
+    csvOsVersionFile: string,
     oneDataItem : array,
-    csvFileData : array,
+    csvOverviewFileData : array,
     csvCountryFileData : array,
     countryTableData: array,
+    csvOsVersionFileData : array,
+    osVersionTableData: array,
 
     transactionDate: string,
     countryTransDate: string,
-    countryCode: string,
-    countryName: string,
-    countryInstalls: string,
-    countryActiveDevices: string,
     packageNameFromCsv: string,
     totalUserInstalls: number,
-    activeDeviceInstalls: number
+    activeDeviceInstalls: number,
+
+    osVersionTransDate: string,
+    titleFromScraperApp: string,
   }
   constructor() {
     super();
     this.readOverviewCsvFilePP = this.readOverviewCsvFilePP.bind(this);
-    this.readCountryCsvFilePapaParse = this.readCountryCsvFilePapaParse.bind(this);
+    this.readCountryCsvFilePP = this.readCountryCsvFilePP.bind(this);
+    this.readOsVersionCsvFilePP = this.readOsVersionCsvFilePP.bind(this);
     this.state = {
       csvOverviewFile: "no overview.csv file selected yet",
       csvCountryFile: "no country.csv file selected yet",
+      csvOsVersionFile: "no os_versiion.csv file selected yet",
       oneDataItem: ["2017-10-09","org.mixtecosilacayoapan.mks",3,4,5,6,7,8],
-      csvFileData: [[1],[2]],
+      csvOverviewFileData: [[1],[2]],
       csvCountryFileData: [[1],[2]],
       countryTableData: ['some initial state'],
 
+
       transactionDate: 'transactionDate',
       countryTransDate: 'countryTransDate',
-      countryCode: 'countryCode',
-      countryName: 'countryName',
-      countryInstalls: 'countryInstalls',
-      countryActiveDevices: 'countryActiveDevices',
       packageNameFromCsv: 'packageNameFromCsv',
       totalUserInstalls: -1,
-      activeDeviceInstalls: -1
+      activeDeviceInstalls: -1,
+
+      osVersionTransDate: 'osVersionTransDate',
+      titleFromScraperApp: "no package chosen yet 2",
+      csvOsVersionFileData: [[1],[2]],
+      osVersionTableData: ['some initial state']
     };
   }
+  getGooglePlayAppResults = (packageName) => {
+    console.log('entering getGooglePlayAppResults');
+    const appPackageName = packageName;
+    // eg 'org.scriptureearth.adj.nt.apk'
+    gplay.app({appId: appPackageName})
+        .then((value) => {
+          this.setState({ titleFromScraperApp: value.title });
+          console.log(value.title);
+        });
+    console.log('leaving getGooglePlayAppResults');
+  } //================= getGooglePlayAppResults
+
   readOverviewCsvFilePP = () => {
     console.log('entering readOverviewCsvFilePP');
     const filename = this.state.csvOverviewFile;
@@ -83,7 +103,7 @@ class ImportCsvFileWithPapaParse extends Component {
   doStuffOverview = (data) => {
       //Data is usable here
       console.log(data);
-      this.setState({ csvFileData: data });
+      this.setState({ csvOverviewFileData: data });
       console.log( data.length);
       console.log('Column Headings in file: ');
       console.log(data[0]);
@@ -100,38 +120,32 @@ class ImportCsvFileWithPapaParse extends Component {
       this.setState({ totalUserInstalls: firstEntry[5] });
       this.setState({ activeDeviceInstalls: firstEntry[8] });
   }
-  readCountryCsvFilePapaParse = () => {
-    console.log('entering readCountryCsvFilePapaParse');
+  readCountryCsvFilePP = () => {
+    console.log('entering readCountryCsvFilePP');
     const filename = this.state.csvCountryFile;
     this.parseDataC1(filename, this.doStuffCountry);
 
-    console.log('leaving readCountryCsvFilePapaParse');
+    console.log('leaving readCountryCsvFilePP');
   }
   doStuffCountry = (data) => {
       //Data is usable here
       console.log(data);
       this.setState({ csvCountryFileData: data });
-      console.log( data.length);
       console.log('Column Headings in file: ');
       console.log(data[0]);
       const firstEntry = data[1];
-      console.log('Last entry in file: ');
+      console.log('First entry in file: ');
       this.setState({ oneDataItem: firstEntry });
       console.log(firstEntry);
       console.log('Date: ' + firstEntry[0]);
       this.setState({ countryTransDate: firstEntry[0] });
       console.log('Package Name: ' + firstEntry[1]);
+      this.getGooglePlayAppResults(firstEntry[1]);
       console.log('Country: ' + firstEntry[2]);
-      this.setState({ countryCode: firstEntry[2] });
-      this.setState({ countryName: countries.getName(firstEntry[2], "en") });
-      this.setState({ countryInstalls: firstEntry[6] });
-      this.setState({ countryActiveDevices: firstEntry[9] });
       let firstTransactionDate = firstEntry[0];
       let i = 1;
       var tableData = [];
       var tableRow = {};
-      let country='someCountry';
-      let code= 'someCode';
       while (data[i][0] === firstTransactionDate) {
         let row = data[i];
         //console.log('Code: ' + row[2] + ', TotalInstalls: ' + row[6] + ', ActiveDevices: ' + row[9] +", Country => " + countries.getName(row[2], "en") );
@@ -146,6 +160,50 @@ class ImportCsvFileWithPapaParse extends Component {
         i++;
       }
       this.setState({ countryTableData: tableData});
+  }
+  readOsVersionCsvFilePP = () => {
+    console.log('entering readOsVersionCsvFilePP');
+    const filename = this.state.csvOsVersionFile;
+    this.parseDataC1(filename, this.doStuffOsVersion);
+
+    console.log('leaving readOsVersionCsvFilePP');
+  }
+  doStuffOsVersion = (data) => {
+      //Data is usable here
+      console.log(data);
+      this.setState({ csvOsVersionFileData: data });
+      console.log('Column Headings in file: ');
+      console.log(data[0]);
+      const firstEntry = data[1];
+      console.log('First entry in os_version file: ');
+      console.log(firstEntry);
+      console.log('Date: ' + firstEntry[0]);
+      this.setState({ osVersionTransDate: firstEntry[0] });
+      console.log('Package Name: ' + firstEntry[1]);
+      this.getGooglePlayAppResults(firstEntry[1]);
+      console.log('AndroidOSversion: ' + firstEntry[2]);
+      console.log('Android Total User Installs: ' + firstEntry[6]);
+      console.log('Android Active Device Installs: ' + firstEntry[9]);
+
+      let firstTransactionDate = firstEntry[0];
+      let i = 1;
+      var tableData = [];
+      var tableRow = {};
+      while (data[i][0] === firstTransactionDate) {
+        let row = data[i];
+        //console.log('Code: ' + row[2] + ', TotalInstalls: ' + row[6] + ', ActiveDevices: ' + row[9] +", Country => " + countries.getName(row[2], "en") );
+        if (row[2] == "") {
+          tableRow = { "osVersion": "unknown", "installs": row[6], "active": row[9]};
+        } else {
+          tableRow = { "osVersion": row[2], "installs": row[6], "active": row[9]};
+        }
+        console.log (tableRow);
+        tableData.push(tableRow);
+        //console.log(tableData);
+        i++;
+      }
+      console.log(tableData);
+      this.setState({ osVersionTableData: tableData});
   }
 
 
@@ -175,6 +233,19 @@ class ImportCsvFileWithPapaParse extends Component {
     }
     console.log('end of selectCsvCountryFile');
   }
+  selectCsvOsVersionFile = () => {
+    console.log('called selectCsvOsVersionFile');
+    const fileNames = dialog.showOpenDialog({ title:"Select an os_version.csv file", filters:[{name: '...os_version.csv', extensions: ['csv']}] });
+    //var path = dialog.showOpenDialog( { title:"Select a folder", properties: ["openDirectory"] } );
+    if (fileNames === undefined) {
+      console.log('inside selectCsvOsVersionFile No file selected');
+      this.setState({ csvOsVersionFile: '' });
+    } else {
+      // console.log('going to set the filename and boolean' + fileNames);
+      this.setState({ csvOsVersionFile: fileNames[0] });
+    }
+    console.log('end of selectCsvOsVersionFile');
+  }
 
   render() {
     /*
@@ -186,11 +257,8 @@ class ImportCsvFileWithPapaParse extends Component {
     */
     let transactionDate = 'transactionDate';
     let countryTransDate = 'countryTransDate';
-    let countryCode = 'countryCode';
-    let countryName = 'countryName';
-    let countryInstalls = 'countryInstalls';
-    let countryActiveDevices = 'countryActiveDevices';
     let packageNameFromCsv = 'packageNameFromCsv';
+    let titleFromCountryPackageName = 'noTitleSetYet';
     let totalUserInstalls = -1;
     let activeDeviceInstalls = -1;
     let countryStats = [
@@ -199,6 +267,15 @@ class ImportCsvFileWithPapaParse extends Component {
       installs:32,
       active: 29,
       country: 'tempDataBrazil'
+    }];
+
+    let osVersionTransDate = 'osVersionTransDate';
+    let titleFromOSVersionPackageName = 'noTitleSetYet';
+    let osVersionStats = [
+    {
+      osVersion: "Android R2D2",
+      installs:16,
+      active: 11
     }];
 
     if (this.state.csvOverviewFile === 'no overview.csv file selected yet') {
@@ -213,11 +290,15 @@ class ImportCsvFileWithPapaParse extends Component {
       // possibly do something
     } else {
       countryTransDate = this.state.countryTransDate;
-      countryCode = this.state.countryCode;
-      countryName = this.state.countryName;
-      countryInstalls = this.state.countryInstalls;
-      countryActiveDevices = this.state.countryActiveDevices;
       countryStats = this.state.countryTableData;
+      titleFromCountryPackageName = this.state.titleFromScraperApp;
+    }
+    if (this.state.csvOsVersionFile === 'no os_versiion.csv file selected yet') {
+      // possibly do something
+    } else {
+      osVersionTransDate = this.state.osVersionTransDate;
+      osVersionStats = this.state.osVersionTableData;
+      titleFromOSVersionPackageName = this.state.titleFromScraperApp;
     }
 
 
@@ -266,57 +347,98 @@ class ImportCsvFileWithPapaParse extends Component {
                     </div> {/* form-group */}
                   </div>
                 </div>
-                <div className="panel panel-info">
-                  <div className="panel-heading">Display Results from Countries file...</div>
-                  <div className="panel-body">
-                    <div className="btn-toolbar" role="group" aria-label="Basic example">
-                      <div className="pull-left">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={this.selectCsvCountryFile}
-                        >Select ...country.csv File</button>&nbsp;
-                      </div>
-                      <div className="col-sm-offset-3">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={this.readCountryCsvFilePapaParse}
-                        >Process country.csv File Papa</button>&nbsp;
-                      </div>
-                    </div>
-                    <div className="form-text" id="csvOverviewFileId" >{this.state.csvCountryFile}</div>
-                    <div className="form-group">
-                      <label className="col-sm-6 control-label" htmlFor="countryTransDate">Date</label>
-                      <div className="form-text" id="countryTransDate" placeholder="countryTransDate" >{countryTransDate}</div>
-                      <br></br>
-                      <label className="col-sm-6 control-label" htmlFor="countryCode">Country Code</label>
-                      <div className="form-text" id="countryCode" placeholder="countryCode" >{countryCode}</div>
-                      <br></br>
-                      <label className="col-sm-6 control-label" htmlFor="countryName">Country Name</label>
-                      <div className="form-text" id="countryName" placeholder="countryName" >{countryName}</div>
-                      <br></br>
-                      <label className="col-sm-6 control-label" htmlFor="countryInstalls">Total User Installs</label>
-                      <div className="form-text" id="countryInstalls" placeholder="countryInstalls" >{countryInstalls}</div>
-                      <br></br>
-                      <label className="col-sm-6 control-label" htmlFor="countryActiveDevices">Active Device Installs</label>
-                      <div className="form-text" id="countryActiveDevices" placeholder="countryActiveDevices" >{countryActiveDevices}</div>
-                      <br></br>
-                    </div> {/* form-group */}
-                  </div>
-                </div>
-              </div>
+                {/* ===================================================================================================================== */}
+
+              </div> {/* form-group */}
             </form>
           </div>
         </div>
         <div className="container">
-          <BootstrapTable data={countryStats} search searchPlaceholder='type items to search for...' multiColumnSearch>
-              <TableHeaderColumn isKey dataField='code' width='20%'>Country Code</TableHeaderColumn>
-              <TableHeaderColumn dataField='installs' width='20%'>Total Installs</TableHeaderColumn>
-              <TableHeaderColumn dataField='active' width='20%'>Active Devices</TableHeaderColumn>
-              <TableHeaderColumn dataField='country'width='40%'>Country</TableHeaderColumn>
+        <div className="panel panel-primary">
+          {/* ===================================================================================================================== */}
+          <div className="panel panel-info">
+            <div className="panel-heading">Display Results from Countries file...</div>
+            <div className="panel-body">
+              <div className="btn-toolbar" role="group" aria-label="Basic example">
+                <div className="pull-left">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.selectCsvCountryFile}
+                  >Select ...country.csv File</button>&nbsp;
+                </div>
+                <div className="col-sm-offset-3">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.readCountryCsvFilePP}
+                  >Process country.csv File Papa</button>&nbsp;
+                </div>
+              </div>
+              <div className="form-text" id="csvOverviewFileId" >{this.state.csvCountryFile}</div>
+                <div className="form-group">
+                  <label className="col-xs-6 col-md-3 col-sm-3 control-label" htmlFor="countryTransDate">Date</label>
+                  <div className="form-text" id="countryTransDate" placeholder="countryTransDate" >{countryTransDate}</div>
+                  <br></br>
+                  <label className="col-xs-6 col-md-3 col-sm-3 control-label" htmlFor="titleFromCountryPackageName">App Title</label>
+                  <div className="form-text" id="titleFromCountryPackageName" placeholder="titleFromCountryPackageName" >{titleFromCountryPackageName}</div>
+                  <br></br>
+                </div> {/* form-group */}
+              </div>
+            </div> {/* panel-info */}
+            {/* ===================================================================================================================== */}
+            <BootstrapTable data={countryStats} headerStyle={ { borderRadius: 0, border: 0, padding : 0, backgroundColor: '#eeeeee'  } } search searchPlaceholder='type items to search for...' multiColumnSearch>
+                <TableHeaderColumn isKey dataField='code' width='20%'>Country Code</TableHeaderColumn>
+                <TableHeaderColumn dataField='installs' width='20%'>Total Installs</TableHeaderColumn>
+                <TableHeaderColumn dataField='active' width='20%'>Active Devices</TableHeaderColumn>
+                <TableHeaderColumn dataField='country'width='40%'>Country</TableHeaderColumn>
+            </BootstrapTable>
+          </div>
+
+        </div>
+
+        <hr></hr>
+        <div className="container">
+        <div className="panel panel-primary">
+          {/* ===================================================================================================================== */}
+          <div className="panel panel-info">
+            <div className="panel-heading">Display Results from OS Version file...</div>
+            <div className="panel-body">
+              <div className="btn-toolbar" role="group" aria-label="Basic example">
+                <div className="pull-left">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.selectCsvOsVersionFile}
+                  >Select ...os_version.csv File</button>&nbsp;
+                </div>
+                <div className="col-sm-offset-3">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.readOsVersionCsvFilePP}
+                  >Process os_version.csv File Papa</button>&nbsp;
+                </div>
+              </div>
+              <div className="form-text" id="csvOsVersionFileId" >{this.state.csvOsVersionFile}</div>
+            </div>
+            <label className="col-xs-6 col-md-3 col-sm-3 control-label" htmlFor="osVersionTransDate">Date</label>
+            <div className="form-text" id="osVersionTransDate" placeholder="osVersionTransDate" >{osVersionTransDate}</div>
+            <br></br>
+            <label className="col-xs-6 col-md-3 col-sm-3 control-label" htmlFor="titleFromOSVersionPackageName">App Title</label>
+            <div className="form-text" id="titleFromOSVersionPackageName" placeholder="titleFromOSVersionPackageName" >{titleFromOSVersionPackageName}</div>
+            <br></br>
+          </div> {/* panel-info */}
+
+          <BootstrapTable data={osVersionStats} headerStyle={ { borderRadius: 0, border: 0, padding : 0, backgroundColor: '#eeeeee' } } >
+              <TableHeaderColumn isKey dataField='osVersion' width='33%'>OS Version</TableHeaderColumn>
+              <TableHeaderColumn dataField='installs' width='33%'>Total Installs</TableHeaderColumn>
+              <TableHeaderColumn dataField='active' width='33%'>Active Devices</TableHeaderColumn>
           </BootstrapTable>
         </div>
+
+        </div>
+
     </div>
     );
   }
