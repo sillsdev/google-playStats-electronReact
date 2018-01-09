@@ -50,6 +50,7 @@ main.js.map
 app/components/output
 app/components/gsutil-acrn
 app/components/gsutil-downloads
+app/components/gsutil-downloads-currentMonth
 
 .idea
 npm-debug.log.*

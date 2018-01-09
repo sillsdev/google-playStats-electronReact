@@ -78,8 +78,10 @@ class GooglePlayScraper extends Component {
     console.log('entering getGooglePlayAppResults');
 
     //========================== app
-    let results = gplay.app({appId: 'org.scriptureearth.adj.nt.apk'})
+    /*let results = gplay.app({appId: 'org.scriptureearth.adj.nt.apk'})
       .then(console.log, console.log);
+      */
+
 
     const appPackageName = this.state.packageNameFromScraperSearch;
     // eg 'org.scriptureearth.adj.nt.apk'
@@ -97,9 +99,6 @@ class GooglePlayScraper extends Component {
           console.log(value);
 
         });
-
-    console.log('here are the results =============>');
-    console.log(results);
 
     console.log('leaving getGooglePlayAppResults');
   } //================= getGooglePlayAppResults
@@ -153,26 +152,37 @@ class GooglePlayScraper extends Component {
     command = 'gsutil cp -r ' + filesToDownload + 'app/components/gsutil-downloads';
     console.log (command);
     cmd.run(command);
+    /*
     cmd.get(
         'ls app/components',
         function(err, data, stderr){
             console.log('the current dir contains these files :\n\n',data)
         }
     );
-
-
+    */
     console.log('leaving gsutilDownloadAnAppStats');
   }
   gsutilDownloadAllCurrentWbtApps = () => {
     console.log('entering gsutilDownloadAnAppStats');
     let dt = new Date();
-    let months = [
+    let monthsNums = [
     '01', '02', '03', '04', '05',
     '06', '07', '08', '09',
     '10', '11', '12'
     ];
-    let filesToDownload = 'gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_' +  + '_*.csv ';
-
+    let filesToDownload = 'gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_*' + dt.getFullYear() + monthsNums[dt.getMonth()] +'_overview.csv ';
+    console.log(filesToDownload);
+    let command = 'gsutil cp -r ' + filesToDownload + 'app/components/gsutil-download-currentMonth';
+    console.log(command);
+    cmd.run(command);
+    /*
+    cmd.get(
+        'ls app/components/gsutil-download-currentMonth',
+        function(err, data, stderr){
+            console.log('the dir app/components/gsutil-download-currentMonth contains these files :\n\n',data)
+        }
+    );
+    */
     console.log('leaving gsutilDownloadAnAppStats');
   }
 

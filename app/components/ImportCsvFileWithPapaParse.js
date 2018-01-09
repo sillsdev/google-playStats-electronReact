@@ -14,11 +14,7 @@ import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
 const app = electron.remote;
 const dialog = app.dialog;
-const fs = require('fs');
-const fsOutput = require('fs');
 const jsonData = require('./SABprojectsData.json');
-const csv=require('csvtojson');
-const csvToArray = require("csv-to-array");
 const countries = require("i18n-iso-countries");
 var gplay = require('google-play-scraper');
 
