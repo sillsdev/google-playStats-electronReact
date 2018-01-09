@@ -10,6 +10,7 @@ import electron from 'electron';
 import ImportCsvFileWithPapaParse from '../components/ImportCsvFileWithPapaParse';
 import GooglePlayScraper from '../components/GooglePlayScraper';
 import Table from '../components/Table';
+import DisplayGoogleWbtApps from '../components/DisplayGoogleWbtApps';
 
 
 const app = electron.remote;
@@ -64,6 +65,7 @@ export default class Home extends Component {
           <div className="App-header">
             <h2>Scripture Apps Install Stats</h2>
           </div>
+          <DisplayGoogleWbtApps />
           <GooglePlayScraper
             propInHome={this.state.googlePlayScaperProp}
             onChangepropInHome={this.mainonChangepropInHome}

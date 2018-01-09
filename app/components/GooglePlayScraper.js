@@ -27,7 +27,7 @@ class GooglePlayScraper extends Component {
 
     googlePlaySearchStr: string,
     scraperSearchResults: array,
-    scraperAppResults: array
+    scraperAppResults: array,
   }
   constructor() {
     super();
@@ -56,7 +56,7 @@ class GooglePlayScraper extends Component {
   getGooglePlayDeveloperResults = () => {
     console.log('entering getGooglePlayDeveloperResults');
     //========================== developer
-    gplay.developer({devId: "Wycliffe Bible Translators, Inc"}).then(console.log);
+    gplay.developer({devId: "Wycliffe Bible Translators, Inc", num: 260}).then(console.log);
     console.log('leaving getGooglePlayDeveloperResults');
   } //================= getGooglePlayDeveloperResults
   getGooglePlayAppReviews = () => {
@@ -145,11 +145,11 @@ class GooglePlayScraper extends Component {
 
     console.log('leaving getGooglePlaySearchResults');
   }
-  gsutilRunACommand = () => {
-    console.log('entering gsutilRunACommand');
-    let filesToDownload = 'gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_' + this.state.packageNameFromScraperSearch + '_*overview.csv ';
+  gsutilDownloadAnAppStats = () => {
+    console.log('entering gsutilDownloadAnAppStats');
+    let filesToDownload = 'gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_' + this.state.packageNameFromScraperSearch + '_*.csv ';
     let command = "gsutil cp -r gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_org.scriptureearth.acrn.nt.apk_*.csv app/components/gsutil-downloads";
-    console.log (command);
+    //console.log (command);
     command = 'gsutil cp -r ' + filesToDownload + 'app/components/gsutil-downloads';
     console.log (command);
     cmd.run(command);
@@ -161,7 +161,19 @@ class GooglePlayScraper extends Component {
     );
 
 
-    console.log('leaving gsutilRunACommand');
+    console.log('leaving gsutilDownloadAnAppStats');
+  }
+  gsutilDownloadAllCurrentWbtApps = () => {
+    console.log('entering gsutilDownloadAnAppStats');
+    let dt = new Date();
+    let months = [
+    '01', '02', '03', '04', '05',
+    '06', '07', '08', '09',
+    '10', '11', '12'
+    ];
+    let filesToDownload = 'gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_' +  + '_*.csv ';
+
+    console.log('leaving gsutilDownloadAnAppStats');
   }
 
   handleSearchStringChange = (event) => {
@@ -173,6 +185,12 @@ class GooglePlayScraper extends Component {
     }
   }
   render() {
+    let dt = new Date();
+    let months = [
+    'January', 'February', 'March', 'April', 'May',
+    'June', 'July', 'August', 'September',
+    'October', 'November', 'December'
+    ];
     //  const { emailAddy } = this.props;
     //  const { propInHome } = this.props;
     let packageNameFromScraperSearch = 'packageNameFromScraperSearch';
@@ -198,6 +216,8 @@ class GooglePlayScraper extends Component {
     versionFromScraperApp = this.state.versionFromScraperApp;
     androidVersionTextFromScraperApp = this.state.androidVersionTextFromScraperApp;
     developerEmailFromScraperApp = this.state.developerEmailFromScraperApp;
+    let currentMonthYear = 'currentMonthYear';
+    currentMonthYear =  months[dt.getMonth()]  + ' '+ dt.getFullYear();
     return (
       <div className="panel-group">
         <div className="panel panel-primary">
@@ -260,35 +280,32 @@ class GooglePlayScraper extends Component {
               </div> {/* container */}
               <div className="container">
                 <div className="form-group">
-                  <label className="col-sm-3 control-label" htmlFor="packageNameFromScraperSearch">Package Name From Search: </label>
+                  <label className="col-sm-4 control-label" htmlFor="packageNameFromScraperSearch">Package Name From Search: </label>
                   <div className="form-text" id="packageNameFromScraperSearch" placeholder="packageNameFromScraperSearch" >{packageNameFromScraperSearch}</div>
                 </div> {/* form-group */}
+
                 <div className="form-group">
-                  <label className="col-sm-3 control-label" htmlFor="packageNameFromScraperApp">Package Name: </label>
-                  <div className="form-text" id="packageNameFromScraperApp" placeholder="packageNameFromScraperApp" >{packageNameFromScraperApp}</div>
-                </div> {/* form-group */}
-                <div className="form-group">
-                  <label className="col-sm-3 control-label" htmlFor="titleFromScraperApp">Title: </label>
+                  <label className="col-sm-4 control-label" htmlFor="titleFromScraperApp">Title: </label>
                   <div className="form-text" id="titleFromScraperApp" placeholder="titleFromScraperApp" >{titleFromScraperApp}</div>
                 </div> {/* form-group */}
                 <div className="form-group">
-                  <label className="col-sm-3 control-label" htmlFor="reviewsFromScraperApp">Number of reviews:</label>
+                  <label className="col-sm-4 control-label" htmlFor="reviewsFromScraperApp">Number of reviews:</label>
                   <div className="form-text" id="reviewsFromScraperApp" placeholder="reviewsFromScraperApp" >{reviewsFromScraperApp}</div>
                 </div> {/* form-group */}
                 <div className="form-group">
-                  <label className="col-sm-3 control-label" htmlFor="scoreNameFromScraperApp">Average score:</label>
+                  <label className="col-sm-4 control-label" htmlFor="scoreNameFromScraperApp">Average score:</label>
                   <div className="form-text" id="scoreNameFromScraperApp" placeholder="scoreNameFromScraperApp" >{scoreNameFromScraperApp}</div>
                 </div> {/* form-group */}
                 <div className="form-group">
-                  <label className="col-sm-3 control-label" htmlFor="versionFromScraperApp">Version: </label>
+                  <label className="col-sm-4 control-label" htmlFor="versionFromScraperApp">Version: </label>
                   <div className="form-text" id="versionFromScraperApp" placeholder="versionFromScraperApp" >{versionFromScraperApp}</div>
                 </div> {/* form-group */}
                 <div className="form-group">
-                  <label className="col-sm-3 control-label" htmlFor="androidVersionTextFromScraperApp">Android Version Text: </label>
+                  <label className="col-sm-4 control-label" htmlFor="androidVersionTextFromScraperApp">Android Version Text: </label>
                   <div className="form-text" id="androidVersionTextFromScraperApp" placeholder="androidVersionTextFromScraperApp" >{androidVersionTextFromScraperApp}</div>
                 </div> {/* form-group */}
                 <div className="form-group">
-                  <label className="col-sm-3 control-label" htmlFor="developerEmailFromScraperApp">Developer Email: </label>
+                  <label className="col-sm-4 control-label" htmlFor="developerEmailFromScraperApp">Developer Email: </label>
                   <div className="form-text" id="developerEmailFromScraperApp" placeholder="developerEmailFromScraperApp" >{developerEmailFromScraperApp}</div>
                 </div> {/* form-group */}
               </div>
@@ -307,7 +324,7 @@ class GooglePlayScraper extends Component {
                     <button
                       type="button"
                       className="btn btn-primary"
-                      onClick={this.gsutilRunACommand}
+                      onClick={this.gsutilDownloadAnAppStats}
                     >Download</button>&nbsp;
                   </div>
                   <br></br>
@@ -316,6 +333,29 @@ class GooglePlayScraper extends Component {
               </div> {/* form-group */}
             </div>
           </div>
+          <div className="panel panel-info">
+            <div className="panel-heading">Download This Month's Overview Files for All WBT Apps</div>
+            <div className="panel-body">
+              <div className="form-group">
+                <label className="col-sm-3 control-label" htmlFor="currentMonthYear">Current Month and Year</label>
+                <div className="form-text" id="currentMonthYear" placeholder="currentMonthYear" >{currentMonthYear}</div>
+              </div> {/* form-group */}
+              <div className="form-group">
+                <div className="col-sm-offset-1 col-sm-9">
+                  <div className="pull-right">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.gsutilDownloadAllCurrentWbtApps}
+                    >Download All Apps</button>&nbsp;
+                  </div>
+                  <br></br>
+
+                </div>  {/* className="col-sm-offset-3 col-sm-9" */}
+              </div> {/* form-group */}
+            </div>
+          </div>
+
         </div>
 
       </div>

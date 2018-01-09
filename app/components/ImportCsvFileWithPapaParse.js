@@ -44,6 +44,10 @@ class ImportCsvFileWithPapaParse extends Component {
 
     osVersionTransDate: string,
     titleFromScraperApp: string,
+
+    reviewsFromScraperApp: string,
+    scoreNameFromScraperApp: string,
+    versionFromScraperApp: string
   }
   constructor() {
     super();
@@ -69,7 +73,11 @@ class ImportCsvFileWithPapaParse extends Component {
       osVersionTransDate: 'osVersionTransDate',
       titleFromScraperApp: "no package chosen yet 2",
       csvOsVersionFileData: [[1],[2]],
-      osVersionTableData: ['some initial state']
+      osVersionTableData: ['some initial state'],
+
+      reviewsFromScraperApp: 'nada',
+      scoreNameFromScraperApp: 'nada',
+      versionFromScraperApp: 'nada'
     };
   }
   getGooglePlayAppResults = (packageName) => {
@@ -79,6 +87,9 @@ class ImportCsvFileWithPapaParse extends Component {
     gplay.app({appId: appPackageName})
         .then((value) => {
           this.setState({ titleFromScraperApp: value.title });
+          this.setState({ reviewsFromScraperApp: value.reviews });
+          this.setState({ scoreNameFromScraperApp: value.score });
+          this.setState({ versionFromScraperApp: value.version });
           console.log(value.title);
         });
     console.log('leaving getGooglePlayAppResults');
@@ -259,6 +270,12 @@ class ImportCsvFileWithPapaParse extends Component {
     let countryTransDate = 'countryTransDate';
     let packageNameFromCsv = 'packageNameFromCsv';
     let titleFromCountryPackageName = 'noTitleSetYet';
+    let reviewsFromScraperApp = 'noReviewsFetchedYet';
+    let scoreNameFromScraperApp = 'nReviewScoresFetchedYet';
+    let versionFromScraperApp = 'noVersionFetchedYet';
+    let reviewsFromScraperAppOS = 'noReviewsFetchedYet';
+    let scoreNameFromScraperAppOS = 'nReviewScoresFetchedYet';
+    let versionFromScraperAppOS = 'noVersionFetchedYet';
     let totalUserInstalls = -1;
     let activeDeviceInstalls = -1;
     let countryStats = [
@@ -292,6 +309,9 @@ class ImportCsvFileWithPapaParse extends Component {
       countryTransDate = this.state.countryTransDate;
       countryStats = this.state.countryTableData;
       titleFromCountryPackageName = this.state.titleFromScraperApp;
+      reviewsFromScraperApp = this.state.reviewsFromScraperApp;
+      scoreNameFromScraperApp = this.state.scoreNameFromScraperApp;
+      versionFromScraperApp = this.state.versionFromScraperApp;
     }
     if (this.state.csvOsVersionFile === 'no os_versiion.csv file selected yet') {
       // possibly do something
@@ -299,6 +319,9 @@ class ImportCsvFileWithPapaParse extends Component {
       osVersionTransDate = this.state.osVersionTransDate;
       osVersionStats = this.state.osVersionTableData;
       titleFromOSVersionPackageName = this.state.titleFromScraperApp;
+      reviewsFromScraperAppOS = this.state.reviewsFromScraperApp;
+      scoreNameFromScraperAppOS = this.state.scoreNameFromScraperApp;
+      versionFromScraperAppOS = this.state.versionFromScraperApp;
     }
 
 
@@ -377,11 +400,20 @@ class ImportCsvFileWithPapaParse extends Component {
               </div>
               <div className="form-text" id="csvOverviewFileId" >{this.state.csvCountryFile}</div>
                 <div className="form-group">
-                  <label className="col-xs-6 col-md-3 col-sm-3 control-label" htmlFor="countryTransDate">Date</label>
+                  <label className="col-xs-6 col-md-4 col-sm-4 control-label" htmlFor="countryTransDate">Date</label>
                   <div className="form-text" id="countryTransDate" placeholder="countryTransDate" >{countryTransDate}</div>
                   <br></br>
-                  <label className="col-xs-6 col-md-3 col-sm-3 control-label" htmlFor="titleFromCountryPackageName">App Title</label>
+                  <label className="col-xs-6 col-md-4 col-sm-4 control-label" htmlFor="titleFromCountryPackageName">App Title</label>
                   <div className="form-text" id="titleFromCountryPackageName" placeholder="titleFromCountryPackageName" >{titleFromCountryPackageName}</div>
+                  <br></br>
+                  <label className="col-xs-6 col-md-4 col-sm-4 control-label" htmlFor="reviewsFromScraperApp">Number of reviews:</label>
+                  <div className="form-text" id="reviewsFromScraperApp" placeholder="reviewsFromScraperApp" >{reviewsFromScraperApp}</div>
+                  <br></br>
+                  <label className="ccol-xs-6 col-md-4 col-sm-4 control-label" htmlFor="scoreNameFromScraperApp">Average score:</label>
+                  <div className="form-text" id="scoreNameFromScraperApp" placeholder="scoreNameFromScraperApp" >{scoreNameFromScraperApp}</div>
+                  <br></br>
+                  <label className="col-xs-6 col-md-4 col-sm-4 control-label" htmlFor="versionFromScraperApp">Version: </label>
+                  <div className="form-text" id="versionFromScraperApp" placeholder="versionFromScraperApp" >{versionFromScraperApp}</div>
                   <br></br>
                 </div> {/* form-group */}
               </div>
@@ -422,11 +454,20 @@ class ImportCsvFileWithPapaParse extends Component {
               </div>
               <div className="form-text" id="csvOsVersionFileId" >{this.state.csvOsVersionFile}</div>
             </div>
-            <label className="col-xs-6 col-md-3 col-sm-3 control-label" htmlFor="osVersionTransDate">Date</label>
+            <label className="col-xs-6 col-md-4 col-sm-4 control-label" htmlFor="osVersionTransDate">Date</label>
             <div className="form-text" id="osVersionTransDate" placeholder="osVersionTransDate" >{osVersionTransDate}</div>
             <br></br>
-            <label className="col-xs-6 col-md-3 col-sm-3 control-label" htmlFor="titleFromOSVersionPackageName">App Title</label>
+            <label className="col-xs-6 col-md-4 col-sm-4 control-label" htmlFor="titleFromOSVersionPackageName">App Title</label>
             <div className="form-text" id="titleFromOSVersionPackageName" placeholder="titleFromOSVersionPackageName" >{titleFromOSVersionPackageName}</div>
+            <br></br>
+            <label className="col-xs-6 col-md-4 col-sm-4 control-label" htmlFor="reviewsFromScraperAppOS">Number of reviews:</label>
+            <div className="form-text" id="reviewsFromScraperAppOS" placeholder="reviewsFromScraperAppOS" >{reviewsFromScraperAppOS}</div>
+            <br></br>
+            <label className="ccol-xs-6 col-md-4 col-sm-4 control-label" htmlFor="scoreNameFromScraperAppOS">Average score:</label>
+            <div className="form-text" id="scoreNameFromScraperAppOS" placeholder="scoreNameFromScraperAppOS" >{scoreNameFromScraperAppOS}</div>
+            <br></br>
+            <label className="col-xs-6 col-md-4 col-sm-4 control-label" htmlFor="versionFromScraperAppOS">Version: </label>
+            <div className="form-text" id="versionFromScraperAppOS" placeholder="versionFromScraperAppOS" >{versionFromScraperAppOS}</div>
             <br></br>
           </div> {/* panel-info */}
 
