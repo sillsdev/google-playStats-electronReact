@@ -148,7 +148,7 @@ class GooglePlayScraper extends Component {
     console.log('entering gsutilDownloadAnAppStats');
     let filesToDownload = 'gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_' + this.state.packageNameFromScraperSearch + '_*.csv ';
     let command = "gsutil cp -r gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_org.scriptureearth.acrn.nt.apk_*.csv app/components/gsutil-downloads";
-    //console.log (command);
+    console.log (filesToDownload);
     command = 'gsutil cp -r ' + filesToDownload + 'app/components/gsutil-downloads';
     console.log (command);
     cmd.run(command);
@@ -170,9 +170,9 @@ class GooglePlayScraper extends Component {
     '06', '07', '08', '09',
     '10', '11', '12'
     ];
-    let filesToDownload = 'gs://pubsite_prod_rev_05224823036325035822/stats/installs/installs_*' + dt.getFullYear() + monthsNums[dt.getMonth()] +'_overview.csv ';
+    let filesToDownload = 'gs://pubsite_prod_rev_05224823036325035822/stats/installs/*' + dt.getFullYear() + monthsNums[dt.getMonth()] +'_overview.csv ';
     console.log(filesToDownload);
-    let command = 'gsutil cp -r ' + filesToDownload + 'app/components/gsutil-download-currentMonth';
+    let command = 'gsutil cp -r ' + filesToDownload + 'app/components/gsutil-downloads-currentmonth';
     console.log(command);
     cmd.run(command);
     /*
@@ -357,7 +357,7 @@ class GooglePlayScraper extends Component {
                       type="button"
                       className="btn btn-primary"
                       onClick={this.gsutilDownloadAllCurrentWbtApps}
-                    >Download All Apps</button>&nbsp;
+                    >Download OverView Files</button>&nbsp;
                   </div>
                   <br></br>
 

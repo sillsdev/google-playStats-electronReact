@@ -19,7 +19,7 @@ class ListWbtApps extends Component {
   }
   constructor() {
     super();
-    this.getWbtBibleIncApps = this.getWbtBibleIncApps.bind(this);
+    this.getWbtBibleIncAppsOverviewFiles = this.getWbtBibleIncAppsOverviewFiles.bind(this);
     this.onSelectAppsFolder = this.onSelectAppsFolder.bind(this);
     this.state = {
       tableOfApps: [],
@@ -46,8 +46,8 @@ class ListWbtApps extends Component {
     console.log('end of onSelectAppsFolder');
   }
 
-  getWbtBibleIncApps = () => {
-    console.log('entering getWbtBibleIncApps');
+  getWbtBibleIncAppsOverviewFiles = () => {
+    console.log('entering getWbtBibleIncAppsOverviewFiles');
     let wbtAppsUpdated = [
       {
         title: "Ga'dang - Bible",
@@ -68,7 +68,7 @@ class ListWbtApps extends Component {
       this.setState({ tableOfApps: wbtAppsUpdated });
 
     //========================== search
-    console.log('leaving getWbtBibleIncApps');
+    console.log('leaving getWbtBibleIncAppsOverviewFiles');
   }
 
   render() {
@@ -104,8 +104,8 @@ class ListWbtApps extends Component {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    onClick={this.getWbtBibleIncApps}
-                  >Get Wycliffe Bible Inc Apps</button>&nbsp;
+                    onClick={this.getWbtBibleIncAppsOverviewFiles}
+                  >Download OverView Files</button>&nbsp;
                 </div>
                 <div className="col-sm-offset-3">
                   <button
