@@ -94,11 +94,11 @@ class ImportCsvFileWithPapaParse extends Component {
   readOverviewCsvFilePP = () => {
     console.log('entering readOverviewCsvFilePP');
     const filename = this.state.csvOverviewFile;
-    this.parseDataC1(filename, this.doStuffOverview);
+    this.parseDataWithPapaParse(filename, this.doStuffOverview);
 
     console.log('leaving readOverviewCsvFilePP');
   }
-  parseDataC1 = (url, callBack) => {
+  parseDataWithPapaParse = (url, callBack) => {
       Papa.parse(url, {
           download: true,
           dynamicTyping: true,
@@ -130,7 +130,7 @@ class ImportCsvFileWithPapaParse extends Component {
   readCountryCsvFilePP = () => {
     console.log('entering readCountryCsvFilePP');
     const filename = this.state.csvCountryFile;
-    this.parseDataC1(filename, this.doStuffCountry);
+    this.parseDataWithPapaParse(filename, this.doStuffCountry);
 
     console.log('leaving readCountryCsvFilePP');
   }
@@ -171,7 +171,7 @@ class ImportCsvFileWithPapaParse extends Component {
   readOsVersionCsvFilePP = () => {
     console.log('entering readOsVersionCsvFilePP');
     const filename = this.state.csvOsVersionFile;
-    this.parseDataC1(filename, this.doStuffOsVersion);
+    this.parseDataWithPapaParse(filename, this.doStuffOsVersion);
 
     console.log('leaving readOsVersionCsvFilePP');
   }

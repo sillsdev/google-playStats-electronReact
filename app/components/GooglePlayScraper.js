@@ -162,29 +162,6 @@ class GooglePlayScraper extends Component {
     */
     console.log('leaving gsutilDownloadAnAppStats');
   }
-  gsutilDownloadAllCurrentWbtApps = () => {
-    console.log('entering gsutilDownloadAnAppStats');
-    let dt = new Date();
-    let monthsNums = [
-    '01', '02', '03', '04', '05',
-    '06', '07', '08', '09',
-    '10', '11', '12'
-    ];
-    let filesToDownload = 'gs://pubsite_prod_rev_05224823036325035822/stats/installs/*' + dt.getFullYear() + monthsNums[dt.getMonth()] +'_overview.csv ';
-    console.log(filesToDownload);
-    let command = 'gsutil cp -r ' + filesToDownload + 'app/components/gsutil-downloads-currentmonth';
-    console.log(command);
-    cmd.run(command);
-    /*
-    cmd.get(
-        'ls app/components/gsutil-download-currentMonth',
-        function(err, data, stderr){
-            console.log('the dir app/components/gsutil-download-currentMonth contains these files :\n\n',data)
-        }
-    );
-    */
-    console.log('leaving gsutilDownloadAnAppStats');
-  }
 
   handleSearchStringChange = (event) => {
     const target = event.target;
@@ -226,8 +203,6 @@ class GooglePlayScraper extends Component {
     versionFromScraperApp = this.state.versionFromScraperApp;
     androidVersionTextFromScraperApp = this.state.androidVersionTextFromScraperApp;
     developerEmailFromScraperApp = this.state.developerEmailFromScraperApp;
-    let currentMonthYear = 'currentMonthYear';
-    currentMonthYear =  months[dt.getMonth()]  + ' '+ dt.getFullYear();
     return (
       <div className="panel-group">
         <div className="panel panel-primary">
@@ -336,28 +311,6 @@ class GooglePlayScraper extends Component {
                       className="btn btn-primary"
                       onClick={this.gsutilDownloadAnAppStats}
                     >Download</button>&nbsp;
-                  </div>
-                  <br></br>
-
-                </div>  {/* className="col-sm-offset-3 col-sm-9" */}
-              </div> {/* form-group */}
-            </div>
-          </div>
-          <div className="panel panel-info">
-            <div className="panel-heading">Download This Month's Overview Files for All WBT Apps</div>
-            <div className="panel-body">
-              <div className="form-group">
-                <label className="col-sm-3 control-label" htmlFor="currentMonthYear">Current Month and Year</label>
-                <div className="form-text" id="currentMonthYear" placeholder="currentMonthYear" >{currentMonthYear}</div>
-              </div> {/* form-group */}
-              <div className="form-group">
-                <div className="col-sm-offset-1 col-sm-9">
-                  <div className="pull-right">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={this.gsutilDownloadAllCurrentWbtApps}
-                    >Download OverView Files</button>&nbsp;
                   </div>
                   <br></br>
 
