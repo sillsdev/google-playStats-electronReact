@@ -94,6 +94,7 @@ class ImportCsvFileWithPapaParse extends Component {
   readOverviewCsvFilePP = () => {
     console.log('entering readOverviewCsvFilePP');
     const filename = this.state.csvOverviewFile;
+    console.log(filename);
     this.parseDataWithPapaParse(filename, this.doStuffOverview);
 
     console.log('leaving readOverviewCsvFilePP');

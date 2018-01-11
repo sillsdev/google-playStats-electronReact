@@ -6,9 +6,11 @@ import Papa from 'papaparse';
 // with es6
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
+var gplay = require('google-play-scraper');
 //requiring path and fs modules
 var path = require('path');
 var fs = require('fs');
+var cmd=require('node-cmd');
 
 const app = electron.remote;
 const dialog = app.dialog;
@@ -21,7 +23,11 @@ class ListWbtApps extends Component {
     appsFolderSelected: boolean,
     appsFolder: string,
     oneDataItem : array,
-    listOfFiles : array
+    listOfFiles : array,
+    listOfApps : array,
+    listOfAppTitles : array,
+
+    titleFromScraperApp: string
   }
   constructor() {
     super();
@@ -31,15 +37,37 @@ class ListWbtApps extends Component {
     this.onProcessFilesInFolder = this.onProcessFilesInFolder.bind(this);
     this.gsutilDownloadNewestWbtOverviewFiles = this.gsutilDownloadNewestWbtOverviewFiles.bind(this);
     this.readOverviewCsvFilePP = this.readOverviewCsvFilePP.bind(this);
+    this.getGooglePlayAppResults = this.getGooglePlayAppResults.bind(this);
 
     this.state = {
       tableOfApps: [],
       appsFolderSelected: false,
       appsFolder: 'appsFolder',
       oneDataItem: [],
-      listOfFiles: []
+      listOfFiles: [],
+      listOfApps: [],
+      listOfAppTitles: [],
+      titleFromScraperApp: "no package chosen yet 2"
     };
   }
+
+  getGooglePlayAppResults = (packageName) => {
+    console.log('entering getGooglePlayAppResults');
+    const appPackageName = packageName;
+    // eg 'org.scriptureearth.adj.nt.apk'
+    gplay.app({appId: appPackageName})
+        .then((value) => {
+          this.setState({ titleFromScraperApp: value.title });
+          //this.setState({ reviewsFromScraperApp: value.reviews });
+          //this.setState({ scoreNameFromScraperApp: value.score });
+          //this.setState({ versionFromScraperApp: value.version });
+          let appTitles = this.state.listOfAppTitles;
+          appTitles.push(value.title);
+          console.log('App Title gplay--> ' + value.title);
+          this.setState({ listOfAppTitles: appTitles });
+        });
+    console.log('leaving getGooglePlayAppResults');
+  } //================= getGooglePlayAppResults
 
   readOverviewCsvFilePP = () => {
     console.log('entering readOverviewCsvFilePP');
@@ -59,18 +87,22 @@ class ListWbtApps extends Component {
   }
   doStuffOverview = (data) => {
       //Data is usable here
-      console.log(data);
-      console.log( data.length);
-      console.log('Column Headings in file: ');
-      console.log(data[0]);
-      const firstEntry = data[1];
-      console.log('Last entry in file: ');
-      this.setState({ oneDataItem: firstEntry });
-      console.log(firstEntry);
-      console.log(firstEntry[0]);
-      console.log(firstEntry[1]);
-      console.log(firstEntry[5]);
-      console.log(firstEntry[8]);
+      //console.log(data);
+      //console.log( data.length);
+      //console.log('Column Headings in file: ');
+      //console.log(data[0]);
+      const lastEntry = data[data.length-2];
+      //console.log('Last entry in file: ');
+      //this.setState({ oneDataItem: lastEntry });
+      let tmpListOfApps = this.state.listOfApps;
+      tmpListOfApps.push(lastEntry);
+      this.setState({ listOfApps: tmpListOfApps });
+      //console.log(lastEntry);
+      //console.log('Date--> ' + lastEntry[0]);
+      //console.log('PackageName--> ' + lastEntry[1]);
+      //console.log('TotalUserInstalls--> ' + lastEntry[5]);
+      //console.log('ActiveDevice Installs--> ' + lastEntry[8]);
+      //this.getGooglePlayAppResults(lastEntry[1]);
   }
 
   onSelectAppsFolder= () =>  {
@@ -103,7 +135,8 @@ class ListWbtApps extends Component {
       //listing all files using forEach
       files.forEach(function (file) {
           // Do whatever you want to do with the file
-          console.log(file);
+          let fileNamePath = path.join(this.state.appsFolder, fileName);
+          console.log(fileNamePath);
       });
     });
     console.log('end of onListFilesInFolder');
@@ -112,21 +145,32 @@ class ListWbtApps extends Component {
     console.log('called onProcessFilesInFolder');
     let directoryPath = this.state.appsFolder;
     fs.readdir(directoryPath, this.saveListOfFiles);
-
     console.log('end of onProcessFilesInFolder');
   }
 
   saveListOfFiles = (err, files) =>  {
     console.log('called saveListOfFiles');
-    {
       //handling error
       if (err) {
           return console.log('Unable to scan directory: ' + err);
       }
       //save files in State
-      this.setState({ listOfFiles: files });
-    }
+      //this.setState({ listOfFiles: files });
+      //files.forEach(this.getAppDataFromFile);
+      //console.log(files);
+      files.forEach(this.getAppDataFromFile);
+
     console.log('end of saveListOfFiles');
+  }
+
+  getAppDataFromFile = (fileName) => {
+    //console.log('entering getAppDataFromFile');
+    // Do whatever you want to do with the file
+    let fileNamePath = path.join(this.state.appsFolder, fileName);
+    //console.log('fileNamePath--> ' + fileNamePath);
+    this.parseDataWithPapaParse(fileNamePath, this.doStuffOverview);
+    //console.log('leaving getAppDataFromFile');
+
   }
 
   gsutilDownloadNewestWbtOverviewFiles = () => {
