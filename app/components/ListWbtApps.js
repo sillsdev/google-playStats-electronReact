@@ -24,6 +24,7 @@ class ListWbtApps extends Component {
     appsFolder: string,
     oneDataItem : array,
     listOfFiles : array,
+    listOfPackages : array,
     listOfApps : array,
     listOfAppTitles : array,
 
@@ -35,9 +36,13 @@ class ListWbtApps extends Component {
     this.onSelectAppsFolder = this.onSelectAppsFolder.bind(this);
     this.onListFilesInFolder = this.onListFilesInFolder.bind(this);
     this.onProcessFilesInFolder = this.onProcessFilesInFolder.bind(this);
+    this.onProcessListOfApps = this.onProcessListOfApps.bind(this);
+
     this.gsutilDownloadNewestWbtOverviewFiles = this.gsutilDownloadNewestWbtOverviewFiles.bind(this);
     this.readOverviewCsvFilePP = this.readOverviewCsvFilePP.bind(this);
     this.getGooglePlayAppResults = this.getGooglePlayAppResults.bind(this);
+    this.savePackageNamesToArray = this.savePackageNamesToArray.bind(this);
+
 
     this.state = {
       tableOfApps: [],
@@ -46,28 +51,12 @@ class ListWbtApps extends Component {
       oneDataItem: [],
       listOfFiles: [],
       listOfApps: [],
+      listOfPackages: [],
       listOfAppTitles: [],
       titleFromScraperApp: "no package chosen yet 2"
+
     };
   }
-
-  getGooglePlayAppResults = (packageName) => {
-    console.log('entering getGooglePlayAppResults');
-    const appPackageName = packageName;
-    // eg 'org.scriptureearth.adj.nt.apk'
-    gplay.app({appId: appPackageName})
-        .then((value) => {
-          this.setState({ titleFromScraperApp: value.title });
-          //this.setState({ reviewsFromScraperApp: value.reviews });
-          //this.setState({ scoreNameFromScraperApp: value.score });
-          //this.setState({ versionFromScraperApp: value.version });
-          let appTitles = this.state.listOfAppTitles;
-          appTitles.push(value.title);
-          console.log('App Title gplay--> ' + value.title);
-          this.setState({ listOfAppTitles: appTitles });
-        });
-    console.log('leaving getGooglePlayAppResults');
-  } //================= getGooglePlayAppResults
 
   readOverviewCsvFilePP = () => {
     console.log('entering readOverviewCsvFilePP');
@@ -75,34 +64,6 @@ class ListWbtApps extends Component {
     this.parseDataWithPapaParse(filename, this.doStuffOverview);
 
     console.log('leaving readOverviewCsvFilePP');
-  }
-  parseDataWithPapaParse = (url, callBack) => {
-      Papa.parse(url, {
-          download: true,
-          dynamicTyping: true,
-          complete: function(results) {
-              callBack(results.data);
-          }
-      });
-  }
-  doStuffOverview = (data) => {
-      //Data is usable here
-      //console.log(data);
-      //console.log( data.length);
-      //console.log('Column Headings in file: ');
-      //console.log(data[0]);
-      const lastEntry = data[data.length-2];
-      //console.log('Last entry in file: ');
-      //this.setState({ oneDataItem: lastEntry });
-      let tmpListOfApps = this.state.listOfApps;
-      tmpListOfApps.push(lastEntry);
-      this.setState({ listOfApps: tmpListOfApps });
-      //console.log(lastEntry);
-      //console.log('Date--> ' + lastEntry[0]);
-      //console.log('PackageName--> ' + lastEntry[1]);
-      //console.log('TotalUserInstalls--> ' + lastEntry[5]);
-      //console.log('ActiveDevice Installs--> ' + lastEntry[8]);
-      //this.getGooglePlayAppResults(lastEntry[1]);
   }
 
   onSelectAppsFolder= () =>  {
@@ -158,10 +119,25 @@ class ListWbtApps extends Component {
       //this.setState({ listOfFiles: files });
       //files.forEach(this.getAppDataFromFile);
       //console.log(files);
-      files.forEach(this.getAppDataFromFile);
 
+      /*
+      let i = 0;
+      for (i=0; i < files.length; i++)
+      {
+        this.getAppDataFromFile(files[i]);
+      }
+      */
+      //files.forEach(this.getAppDataFromFile);
+      Promise.all(
+          Array.from(files).map(entry => this.getAppDataFromFile(entry))
+      ).then(() => {
+          // All done
+          //this.savePackageNamesToArray();
+          console.log('all done now');
+      });
     console.log('end of saveListOfFiles');
   }
+
 
   getAppDataFromFile = (fileName) => {
     //console.log('entering getAppDataFromFile');
@@ -170,8 +146,85 @@ class ListWbtApps extends Component {
     //console.log('fileNamePath--> ' + fileNamePath);
     this.parseDataWithPapaParse(fileNamePath, this.doStuffOverview);
     //console.log('leaving getAppDataFromFile');
-
   }
+  parseDataWithPapaParse = (url, callBack) => {
+      Papa.parse(url, {
+          download: true,
+          dynamicTyping: true,
+          complete: function(results) {
+              callBack(results.data);
+          }
+      });
+  }
+  doStuffOverview = (data) => {
+      //Data is usable here
+      //console.log(data);
+      //console.log( data.length);
+      //console.log('Column Headings in file: ');
+      //console.log(data[0]);
+      const lastEntry = data[data.length-2];
+      //console.log('Last entry in file: ');
+      //this.setState({ oneDataItem: lastEntry });
+      let tmpListOfApps = this.state.listOfApps;
+      tmpListOfApps.push(lastEntry);
+      this.setState({ listOfApps: tmpListOfApps });
+      //console.log(lastEntry);
+      //console.log('Date--> ' + lastEntry[0]);
+      //console.log('PackageName--> ' + lastEntry[1]);
+      //console.log('TotalUserInstalls--> ' + lastEntry[5]);
+      //console.log('ActiveDevice Installs--> ' + lastEntry[8]);
+      //this.getGooglePlayAppResults(lastEntry[1]);
+  }
+
+  onProcessListOfApps = () => {
+    this.savePackageNamesToArray();
+  }
+
+  savePackageNamesToArray = () => {
+    // All done
+    console.log('enter of savePackageNamesToArray');
+    let i = 0;
+    //console.log(this.state.listOfApps)
+    let tmpListOfPackages = [];
+    let tmpListOfApps = [];
+    tmpListOfApps = this.state.listOfApps;
+    //console.log('tmpListOfApps --->'  + tmpListOfApps);
+    //console.log('tmpListOfApps.lengt --->'  + tmpListOfApps.length);
+    for (i=0; i < tmpListOfApps.length; i++)
+    {
+      let packageName = tmpListOfApps[i][1];
+      //console.log('packageName --->'  + packageName);
+      tmpListOfPackages.push(packageName);
+    }
+    this.setState({ listOfPackages: tmpListOfPackages });
+
+    for (i=0; i < tmpListOfPackages.length; i++)
+    {
+      let packageName = tmpListOfPackages[i];
+      //console.log('packageName --->'  + packageName);
+      this.getGooglePlayAppResults(packageName);
+    }
+    console.log('end of savePackageNamesToArray');
+  }
+
+  getGooglePlayAppResults = (packageName) => {
+    console.log('entering getGooglePlayAppResults');
+    const appPackageName = packageName;
+    // eg 'org.scriptureearth.adj.nt.apk'
+    gplay.app({appId: appPackageName})
+        .then((value) => {
+          this.setState({ titleFromScraperApp: value.title });
+          //this.setState({ reviewsFromScraperApp: value.reviews });
+          //this.setState({ scoreNameFromScraperApp: value.score });
+          //this.setState({ versionFromScraperApp: value.version });
+          let appTitles = this.state.listOfAppTitles;
+          appTitles.push(value.title);
+          //console.log('App Title gplay--> ' + value.title);
+          this.setState({ listOfAppTitles: appTitles });
+        });
+    console.log('leaving getGooglePlayAppResults');
+  } //================= getGooglePlayAppResults
+
 
   gsutilDownloadNewestWbtOverviewFiles = () => {
     console.log('entering gsutilDownloadNewestWbtOverviewFiles');
@@ -295,20 +348,32 @@ class ListWbtApps extends Component {
                     onClick={this.onSelectAppsFolder}
                   >Select Folder for Apps</button>&nbsp;
                 </div>
-                <div className="col-sm-offset-7">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.onListFilesInFolder}
-                  >console.log ==> files In Folder</button>&nbsp;
+              </div>
+              <div className="btn-toolbar" role="group" aria-label="Basic example">
+                <div className="">
+                  <div className="col-sm-offset-6">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.onListFilesInFolder}
+                    >console.log ==> files In Folder</button>&nbsp;
+                  </div>
+                  <div className="col-sm-offset-6">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.onProcessFilesInFolder}
+                    >Loop Pull Out Callback</button>&nbsp;
+                  </div>
+                  <div className="col-sm-offset-6">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.onProcessListOfApps}
+                    >Process List of Apps</button>&nbsp;
+                  </div>
                 </div>
-                <div className="col-sm-offset-7">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.onProcessFilesInFolder}
-                  >Loop Pull Out Callback</button>&nbsp;
-                </div>
+
               </div>
             </div>
           </div>
