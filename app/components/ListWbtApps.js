@@ -43,6 +43,7 @@ class ListWbtApps extends Component {
     this.readOverviewCsvFilePP = this.readOverviewCsvFilePP.bind(this);
     this.getGooglePlayAppResults = this.getGooglePlayAppResults.bind(this);
     this.savePackageNamesToArray = this.savePackageNamesToArray.bind(this);
+    this.savePackageNamesToArray2 = this.savePackageNamesToArray2.bind(this);
 
 
     this.state = {
@@ -135,7 +136,6 @@ class ListWbtApps extends Component {
           Array.from(files).map(entry => this.getAppDataFromFile(entry))
       ).then(() => {
           // All done
-          //this.savePackageNamesToArray();
           console.log('all done now');
       });
     console.log('end of saveListOfFiles');
