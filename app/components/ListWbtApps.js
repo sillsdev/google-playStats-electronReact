@@ -36,8 +36,9 @@ class ListWbtApps extends Component {
     this.addEntryToTable = this.addEntryToTable.bind(this);
     this.onSelectAppsFolder = this.onSelectAppsFolder.bind(this);
     this.onListFilesInFolder = this.onListFilesInFolder.bind(this);
-    this.onProcessFilesInFolder = this.onProcessFilesInFolder.bind(this);
+    this.onProcessAllOverviewFilesInFolder = this.onProcessAllOverviewFilesInFolder.bind(this);
     this.onProcessListOfApps = this.onProcessListOfApps.bind(this);
+    this.onDisplayDataInTable = this.onDisplayDataInTable.bind(this);
 
     this.gsutilDownloadNewestWbtOverviewFiles = this.gsutilDownloadNewestWbtOverviewFiles.bind(this);
     this.readOverviewCsvFilePP = this.readOverviewCsvFilePP.bind(this);
@@ -105,40 +106,27 @@ class ListWbtApps extends Component {
     });
     console.log('end of onListFilesInFolder');
   }
-  onProcessFilesInFolder = () =>  {
-    console.log('called onProcessFilesInFolder');
+  onProcessAllOverviewFilesInFolder = () =>  {
+    console.log('called onProcessAllOverviewFilesInFolder');
     this.setState({ listOfApps: [] });
     let directoryPath = this.state.appsFolder;
-    fs.readdir(directoryPath, this.saveListOfFiles);
-    console.log('end of onProcessFilesInFolder');
+    fs.readdir(directoryPath, this.saveAppDataFromEachOverviewFile);
+    console.log('end of onProcessAllOverviewFilesInFolder');
   }
 
-  saveListOfFiles = (err, files) =>  {
-    console.log('called saveListOfFiles');
+  saveAppDataFromEachOverviewFile = (err, files) =>  {
+    console.log('called saveAppDataFromEachOverviewFile');
       //handling error
       if (err) {
           return console.log('Unable to scan directory: ' + err);
       }
-      //save files in State
-      //this.setState({ listOfFiles: files });
-      //files.forEach(this.getAppDataFromFile);
-      //console.log(files);
-
-      /*
-      let i = 0;
-      for (i=0; i < files.length; i++)
-      {
-        this.getAppDataFromFile(files[i]);
-      }
-      */
-      //files.forEach(this.getAppDataFromFile);
       Promise.all(
           Array.from(files).map(entry => this.getAppDataFromFile(entry))
       ).then(() => {
           // All done
           console.log('all done now');
       });
-    console.log('end of saveListOfFiles');
+    console.log('end of saveAppDataFromEachOverviewFile');
   }
 
 
@@ -163,24 +151,14 @@ class ListWbtApps extends Component {
       //Data is usable here
       //console.log(data);
       //console.log( data.length);
-      //console.log('Column Headings in file: ');
-      //console.log(data[0]);
       const lastEntry = data[data.length-2];
-      //console.log('Last entry in file: ');
-      //this.setState({ oneDataItem: lastEntry });
       let tmpListOfApps = this.state.listOfApps;
       tmpListOfApps.push(lastEntry);
       this.setState({ listOfApps: tmpListOfApps });
-      //console.log(lastEntry);
-      //console.log('Date--> ' + lastEntry[0]);
-      //console.log('PackageName--> ' + lastEntry[1]);
-      //console.log('TotalUserInstalls--> ' + lastEntry[5]);
-      //console.log('ActiveDevice Installs--> ' + lastEntry[8]);
-      //this.getGooglePlayAppResults(lastEntry[1]);
   }
 
   onProcessListOfApps = () => {
-    this.savePackageNamesToArray();
+    this.savePackageNamesToArray2();
   }
 
   savePackageNamesToArray2 = () => {
@@ -195,7 +173,6 @@ class ListWbtApps extends Component {
     //console.log('tmpListOfApps.lengt --->'  + tmpListOfApps.length);
     for (i=0; i < tmpListOfApps.length; i++)
     {
-      let packageName = tmpListOfApps[i][1];
       //console.log('packageName --->'  + packageName);
       this.getGooglePlayAppResults2(tmpListOfApps[i]);
     }
@@ -206,7 +183,7 @@ class ListWbtApps extends Component {
     console.log('entering getGooglePlayAppResults');
     let appPackageName = packageInfo[1];
     let totalUserInstalls =  packageInfo[5];
-    let activeDeviceInstalls = firstEntry[8];
+    let activeDeviceInstalls = packageInfo[8];
     // eg 'org.scriptureearth.adj.nt.apk'
     gplay.app({appId: appPackageName, throttle: 5})
         .then((value) => {
@@ -214,7 +191,7 @@ class ListWbtApps extends Component {
 
           let tableEntries = this.state.tableOfApps2;
           let tableEntry = { "packageName": appPackageName, "title": value.title, "score": value.score,
-              "totalInstalls": totalUserInstalls, "activeInstalls": activeDeviceInstalls};
+              "totalInstalls": totalUserInstalls, "activeInstalls": activeDeviceInstalls, "link": 'l2.play.google.com'};
           tableEntries.push(tableEntry);
           this.setState({ tableOfApps2: tableEntries });
 
@@ -234,6 +211,11 @@ class ListWbtApps extends Component {
         });
     console.log('leaving getGooglePlayAppResults');
   } //================= getGooglePlayAppResults
+
+  onDisplayDataInTable = () => {
+    let tableEntries = this.state.tableOfApps2;
+    this.setState({ tableOfApps: tableEntries });
+  }
 
   savePackageNamesToArray = () => {
     // All done
@@ -320,17 +302,23 @@ class ListWbtApps extends Component {
       {
         title: "Ga'dang - Bible",
         packageName: 'org.wycliffe.gdg.nt.apk',
-        link: 'http://play.google.com'
+        link: 'http://play.google.com',
+        totalInstalls: 0,
+        activeInstalls: 0
       },
       {
         title: "Garífuna (Caribe) - Bible",
         packageName: 'org.scriptureearth.cab.nt.apk',
-        link: 'http://play.google.com'
+        link: 'http://play.google.com',
+        totalInstalls: 0,
+        activeInstalls: 0
       },
       {
         title: "Alamblak - Bible",
         packageName: 'org.scriptureearth.amp.nt.apk',
-        link: 'http://play.google.com'
+        link: 'http://play.google.com',
+        totalInstalls: 0,
+        activeInstalls: 0
       }];
 
       this.setState({ tableOfApps: wbtAppsUpdated });
@@ -346,12 +334,16 @@ class ListWbtApps extends Component {
       {
         title: "Ga'dang - Bible",
         packageName: 'org.wycliffe.gdg.nt.apk',
-        link: 'http://play.google.com'
+        link: 'http://play.google.com',
+        totalInstalls: 0,
+        activeInstalls: 0
       },
       {
         title: "Garífuna (Caribe) - Bible",
         packageName: 'org.scriptureearth.cab.nt.apk',
-        link: 'http://play.google.com'
+        link: 'http://play.google.com',
+        totalInstalls: 0,
+        activeInstalls: 0
       }];
       let dt = new Date();
       let months = [
@@ -426,7 +418,7 @@ class ListWbtApps extends Component {
                     <button
                       type="button"
                       className="btn btn-primary"
-                      onClick={this.onProcessFilesInFolder}
+                      onClick={this.onProcessAllOverviewFilesInFolder}
                     >Extract overview.csv files data</button>&nbsp;
                   </div>
                   <div className="col-sm-offset-4">
@@ -434,7 +426,14 @@ class ListWbtApps extends Component {
                       type="button"
                       className="btn btn-primary"
                       onClick={this.onProcessListOfApps}
-                    >Get all App Titles</button>&nbsp;
+                    >Get all Data</button>&nbsp;
+                  </div>
+                  <div className="col-sm-offset-6">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.onDisplayDataInTable}
+                    >Display Data in Table</button>&nbsp;
                   </div>
                 </div>
               </div>
@@ -458,10 +457,12 @@ class ListWbtApps extends Component {
                   >Add Entry to Table</button>&nbsp;
                 </div>
               </div>
-              <BootstrapTable data={wbtApps} headerStyle={ { borderRadius: 0, border: 0, padding : 0, backgroundColor: '#eeeeee'  } } search searchPlaceholder='type items to search for...' multiColumnSearch>
-                  <TableHeaderColumn isKey dataField='title' width='40%'>App Title</TableHeaderColumn>
-                  <TableHeaderColumn dataField='packageName' width='30%'>Package Name</TableHeaderColumn>
-                  <TableHeaderColumn dataField='link' width='30%'>Link To App</TableHeaderColumn>
+              <BootstrapTable data={wbtApps} headerStyle={ { borderRadius: 0, border: 0, padding : 0, backgroundColor: '#eeeeee'  } } search searchPlaceholder='type items to search for...' multiColumnSearch pagination>
+                  <TableHeaderColumn isKey dataField='title' width='25%'>App Title</TableHeaderColumn>
+                  <TableHeaderColumn dataField='packageName' width='25%'>Package Name</TableHeaderColumn>
+                  <TableHeaderColumn dataField='totalInstalls' width='15%'>Total Installs</TableHeaderColumn>
+                  <TableHeaderColumn dataField='activeInstalls' width='15%'>Active Installs</TableHeaderColumn>
+                  <TableHeaderColumn dataField='link' width='20%'>Link To App</TableHeaderColumn>
               </BootstrapTable>
             </div>
           </div>
