@@ -20,11 +20,12 @@ class ListWbtApps extends Component {
   };
   state: {
     tableOfApps: array,
+    tableOfApps2: array,
     appsFolderSelected: boolean,
     appsFolder: string,
     oneDataItem : array,
     listOfFiles : array,
-    listOfPackages : array,
+    listOfPackageNames : array,
     listOfApps : array,
     listOfAppTitles : array,
 
@@ -46,12 +47,13 @@ class ListWbtApps extends Component {
 
     this.state = {
       tableOfApps: [],
+      tableOfApps2: [],
       appsFolderSelected: false,
       appsFolder: 'appsFolder',
       oneDataItem: [],
       listOfFiles: [],
       listOfApps: [],
-      listOfPackages: [],
+      listOfPackageNames: [],
       listOfAppTitles: [],
       titleFromScraperApp: "no package chosen yet 2"
 
@@ -104,6 +106,7 @@ class ListWbtApps extends Component {
   }
   onProcessFilesInFolder = () =>  {
     console.log('called onProcessFilesInFolder');
+    this.setState({ listOfApps: [] });
     let directoryPath = this.state.appsFolder;
     fs.readdir(directoryPath, this.saveListOfFiles);
     console.log('end of onProcessFilesInFolder');
@@ -180,7 +183,7 @@ class ListWbtApps extends Component {
     this.savePackageNamesToArray();
   }
 
-  savePackageNamesToArray = () => {
+  savePackageNamesToArray2 = () => {
     // All done
     console.log('enter of savePackageNamesToArray');
     let i = 0;
@@ -194,13 +197,65 @@ class ListWbtApps extends Component {
     {
       let packageName = tmpListOfApps[i][1];
       //console.log('packageName --->'  + packageName);
-      tmpListOfPackages.push(packageName);
+      this.getGooglePlayAppResults2(tmpListOfApps[i]);
     }
-    this.setState({ listOfPackages: tmpListOfPackages });
+    console.log('end of savePackageNamesToArray');
+  }
 
-    for (i=0; i < tmpListOfPackages.length; i++)
+  getGooglePlayAppResults2 = (packageInfo) => {
+    console.log('entering getGooglePlayAppResults');
+    let appPackageName = packageInfo[1];
+    let totalUserInstalls =  packageInfo[5];
+    let activeDeviceInstalls = firstEntry[8];
+    // eg 'org.scriptureearth.adj.nt.apk'
+    gplay.app({appId: appPackageName, throttle: 5})
+        .then((value) => {
+          this.setState({ titleFromScraperApp: value.title });
+
+          let tableEntries = this.state.tableOfApps2;
+          let tableEntry = { "packageName": appPackageName, "title": value.title, "score": value.score,
+              "totalInstalls": totalUserInstalls, "activeInstalls": activeDeviceInstalls};
+          tableEntries.push(tableEntry);
+          this.setState({ tableOfApps2: tableEntries });
+
+          let appTitles = this.state.listOfAppTitles;
+          let appInfo = { "packageName": appPackageName, "title": value.title, "score": value.score};
+          appTitles.push(appInfo);
+          //console.log('App Title gplay--> ' + value.title);
+          this.setState({ listOfAppTitles: appTitles });
+        }).catch( (fromReject) => {
+          console.log('this package returned a REJECT promise error -->' + appPackageName);
+          console.log('error message is -->' + fromReject);
+          this.setState({ titleFromScraperApp: 'Current App Unplublished' });
+          let appTitles = this.state.listOfAppTitles;
+          let appInfo = { "packageName": appPackageName,  "title": 'unpublished', "score": 0};
+          appTitles.push(appInfo);
+          this.setState({ listOfAppTitles: appTitles });
+        });
+    console.log('leaving getGooglePlayAppResults');
+  } //================= getGooglePlayAppResults
+
+  savePackageNamesToArray = () => {
+    // All done
+    console.log('enter of savePackageNamesToArray');
+    let i = 0;
+    //console.log(this.state.listOfApps)
+    let tmplistOfPackageNames = [];
+    let tmpListOfApps = [];
+    tmpListOfApps = this.state.listOfApps;
+    //console.log('tmpListOfApps --->'  + tmpListOfApps);
+    //console.log('tmpListOfApps.lengt --->'  + tmpListOfApps.length);
+    for (i=0; i < tmpListOfApps.length; i++)
     {
-      let packageName = tmpListOfPackages[i];
+      let packageName = tmpListOfApps[i][1];
+      //console.log('packageName --->'  + packageName);
+      tmplistOfPackageNames.push(packageName);
+    }
+    this.setState({ listOfPackageNames: tmplistOfPackageNames });
+
+    for (i=0; i < tmplistOfPackageNames.length; i++)
+    {
+      let packageName = tmplistOfPackageNames[i];
       //console.log('packageName --->'  + packageName);
       this.getGooglePlayAppResults(packageName);
     }
@@ -211,15 +266,24 @@ class ListWbtApps extends Component {
     console.log('entering getGooglePlayAppResults');
     const appPackageName = packageName;
     // eg 'org.scriptureearth.adj.nt.apk'
-    gplay.app({appId: appPackageName})
+    gplay.app({appId: appPackageName, throttle: 5})
         .then((value) => {
           this.setState({ titleFromScraperApp: value.title });
           //this.setState({ reviewsFromScraperApp: value.reviews });
           //this.setState({ scoreNameFromScraperApp: value.score });
           //this.setState({ versionFromScraperApp: value.version });
           let appTitles = this.state.listOfAppTitles;
-          appTitles.push(value.title);
+          let appInfo = { "packageName": appPackageName, "title": value.title, "score": value.score};
+          appTitles.push(appInfo);
           //console.log('App Title gplay--> ' + value.title);
+          this.setState({ listOfAppTitles: appTitles });
+        }).catch( (fromReject) => {
+          console.log('this package returned a REJECT promise error -->' + appPackageName);
+          console.log('error message is -->' + fromReject);
+          this.setState({ titleFromScraperApp: 'Current App Unplublished' });
+          let appTitles = this.state.listOfAppTitles;
+          let appInfo = { "packageName": appPackageName,  "title": 'unpublished', "score": 0};
+          appTitles.push(appInfo);
           this.setState({ listOfAppTitles: appTitles });
         });
     console.log('leaving getGooglePlayAppResults');
@@ -298,6 +362,10 @@ class ListWbtApps extends Component {
       let currentMonthYear = 'currentMonthYear';
       currentMonthYear =  months[dt.getMonth()]  + ' '+ dt.getFullYear();
 
+      let currentAppTitle = 'currentAppTitle';
+      if (this.state.titleFromScraperApp != '')
+      currentAppTitle = this.state.titleFromScraperApp;
+
       if (this.state.tableOfApps.length != 0)
       {
         wbtApps = this.state.tableOfApps;
@@ -315,7 +383,7 @@ class ListWbtApps extends Component {
                 <div className="form-text" id="currentMonthYear" placeholder="currentMonthYear" >{currentMonthYear}</div>
               </div> {/* form-group */}
               <div className="form-group">
-                <div className="col-sm-offset-1 col-sm-9">
+                <div className="col-sm-offset-1 col-sm-5">
                   <div className="pull-right">
                     <button
                       type="button"
@@ -334,6 +402,54 @@ class ListWbtApps extends Component {
             <div className="panel-heading">Display All Wycliffe Bible Translators Apps</div>
             <div className="panel-body">
               <div className="btn-toolbar" role="group" aria-label="Basic example">
+
+                <div className="pull-left">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.onSelectAppsFolder}
+                  >Select Folder for Apps</button>&nbsp;
+                </div>
+                <div className="col-sm-offset-4">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.onListFilesInFolder}
+                  >console.log ==> files In Folder</button>&nbsp;
+                </div>
+              </div>
+              <br/>
+              <div className="btn-toolbar" role="group" aria-label="Basic example">
+                <div className="">
+
+                  <div className="pull-left">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.onProcessFilesInFolder}
+                    >Extract overview.csv files data</button>&nbsp;
+                  </div>
+                  <div className="col-sm-offset-4">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.onProcessListOfApps}
+                    >Get all App Titles</button>&nbsp;
+                  </div>
+                </div>
+              </div>
+              <br/>
+              <div className="form-group">
+                <label className="col-sm-4 control-label" htmlFor="currentAppTitle">Current App Title</label>
+                <div className="form-text" id="currentAppTitle" placeholder="currentAppTitle" >{currentAppTitle}</div>
+              </div> {/* form-group */}
+            </div>
+          </div>
+          {/* ===================================================================================================================== */}
+          <div className="panel panel-info">
+            <div className="panel-heading">Table of Apps</div>
+            <div className="panel-body">
+              <div className="btn-toolbar" role="group" aria-label="Basic example">
                 <div className="pull-left">
                   <button
                     type="button"
@@ -341,48 +457,15 @@ class ListWbtApps extends Component {
                     onClick={this.addEntryToTable}
                   >Add Entry to Table</button>&nbsp;
                 </div>
-                <div className="col-sm-offset-3">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.onSelectAppsFolder}
-                  >Select Folder for Apps</button>&nbsp;
-                </div>
               </div>
-              <div className="btn-toolbar" role="group" aria-label="Basic example">
-                <div className="">
-                  <div className="col-sm-offset-6">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={this.onListFilesInFolder}
-                    >console.log ==> files In Folder</button>&nbsp;
-                  </div>
-                  <div className="col-sm-offset-6">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={this.onProcessFilesInFolder}
-                    >Loop Pull Out Callback</button>&nbsp;
-                  </div>
-                  <div className="col-sm-offset-6">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={this.onProcessListOfApps}
-                    >Process List of Apps</button>&nbsp;
-                  </div>
-                </div>
-
-              </div>
+              <BootstrapTable data={wbtApps} headerStyle={ { borderRadius: 0, border: 0, padding : 0, backgroundColor: '#eeeeee'  } } search searchPlaceholder='type items to search for...' multiColumnSearch>
+                  <TableHeaderColumn isKey dataField='title' width='40%'>App Title</TableHeaderColumn>
+                  <TableHeaderColumn dataField='packageName' width='30%'>Package Name</TableHeaderColumn>
+                  <TableHeaderColumn dataField='link' width='30%'>Link To App</TableHeaderColumn>
+              </BootstrapTable>
             </div>
           </div>
-          {/* ===================================================================================================================== */}
-          <BootstrapTable data={wbtApps} headerStyle={ { borderRadius: 0, border: 0, padding : 0, backgroundColor: '#eeeeee'  } } search searchPlaceholder='type items to search for...' multiColumnSearch>
-              <TableHeaderColumn isKey dataField='title' width='40%'>App Title</TableHeaderColumn>
-              <TableHeaderColumn dataField='packageName' width='30%'>Package Name</TableHeaderColumn>
-              <TableHeaderColumn dataField='link' width='30%'>Link To App</TableHeaderColumn>
-          </BootstrapTable>
+
         </div>
 
       </div>
