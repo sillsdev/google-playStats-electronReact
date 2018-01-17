@@ -51,6 +51,9 @@ app/components/output
 app/components/gsutil-acrn
 app/components/gsutil-downloads
 app/components/gsutil-downloads-currentMonth
+app/components/gsutil-download-osversion-files
+app/components/gsutil-download-countries-files
+app/components/gsutil-download-overview-files
 
 .idea
 npm-debug.log.*

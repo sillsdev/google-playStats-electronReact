@@ -15,6 +15,13 @@ var cmd=require('node-cmd');
 const app = electron.remote;
 const dialog = app.dialog;
 
+const dt = new Date();
+const monthsNums = [
+'01', '02', '03', '04', '05',
+'06', '07', '08', '09',
+'10', '11', '12'
+];
+
 class ListWbtApps extends Component {
   props: {
   };
@@ -41,6 +48,8 @@ class ListWbtApps extends Component {
     this.onDisplayDataInTable = this.onDisplayDataInTable.bind(this);
 
     this.gsutilDownloadNewestWbtOverviewFiles = this.gsutilDownloadNewestWbtOverviewFiles.bind(this);
+    this.gsutilDownloadNewestWbtCountryFiles = this.gsutilDownloadNewestWbtCountryFiles.bind(this);
+    this.gsutilDownloadNewestWbtOsVersionFiles = this.gsutilDownloadNewestWbtOsVersionFiles.bind(this);
     this.readOverviewCsvFilePP = this.readOverviewCsvFilePP.bind(this);
     this.getGooglePlayAppResults = this.getGooglePlayAppResults.bind(this);
     this.savePackageNamesToArray = this.savePackageNamesToArray.bind(this);
@@ -273,16 +282,35 @@ class ListWbtApps extends Component {
 
 
   gsutilDownloadNewestWbtOverviewFiles = () => {
-    console.log('entering gsutilDownloadNewestWbtOverviewFiles');
-    let dt = new Date();
-    let monthsNums = [
-    '01', '02', '03', '04', '05',
-    '06', '07', '08', '09',
-    '10', '11', '12'
-    ];
-    let filesToDownload = 'gs://pubsite_prod_rev_05224823036325035822/stats/installs/*' + dt.getFullYear() + monthsNums[dt.getMonth()] +'_overview.csv ';
+    console.log('entering gsutilDownloadStatFilesFromGooglePlay');
+    this.gsutilDownloadStatFilesFromGooglePlay('overview-files/', '*_overview.csv ');
+    console.log('leaving gsutilDownloadNewestWbtOverviewFiles');
+  }
+  gsutilDownloadNewestWbtCountryFiles = () => {
+    console.log('entering gsutilDownloadStatFilesFromGooglePlay');
+    this.gsutilDownloadStatFilesFromGooglePlay('countries-files/', '*_country.csv ');
+    console.log('leaving gsutilDownloadNewestWbtOverviewFiles');
+  }
+  gsutilDownloadNewestWbtOsVersionFiles = () => {
+    console.log('entering gsutilDownloadStatFilesFromGooglePlay');
+    this.gsutilDownloadStatFilesFromGooglePlay('osversion-files/','*_os_version.csv ');
+    console.log('leaving gsutilDownloadNewestWbtOverviewFiles');
+  }
+
+  gsutilDownloadStatFilesFromGooglePlay = (path, filetype) => {
+    console.log('entering gsutilDownloadStatFilesFromGooglePlay');
+    //first remove old filesToDownload
+    let command = 'rm app/components/gsutil-download-' + path + '*.*';
+    console.log(command);
+    cmd.run(command);
+    console.log('before');
+    setTimeout(function(){
+        console.log('after');
+    },30000000);
+
+    let filesToDownload = 'gs://pubsite_prod_rev_05224823036325035822/stats/installs/*' + dt.getFullYear() + monthsNums[dt.getMonth()] + filetype;
     console.log(filesToDownload);
-    let command = 'gsutil cp -r ' + filesToDownload + 'app/components/gsutil-downloads-currentmonth';
+    command = 'gsutil cp -r ' + filesToDownload + 'app/components/gsutil-download-' + path;
     console.log(command);
     cmd.run(command);
     /*
@@ -293,7 +321,7 @@ class ListWbtApps extends Component {
         }
     );
     */
-    console.log('leaving gsutilDownloadNewestWbtOverviewFiles');
+    console.log('leaving gsutilDownloadStatFilesFromGooglePlay');
   }
 
   addEntryToTable = () => {
@@ -374,19 +402,25 @@ class ListWbtApps extends Component {
                 <label className="col-sm-4 control-label" htmlFor="currentMonthYear">Current Month and Year</label>
                 <div className="form-text" id="currentMonthYear" placeholder="currentMonthYear" >{currentMonthYear}</div>
               </div> {/* form-group */}
-              <div className="form-group">
-                <div className="col-sm-offset-1 col-sm-5">
-                  <div className="pull-right">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={this.gsutilDownloadNewestWbtOverviewFiles}
-                    >Download OverView Files</button>&nbsp;
-                  </div>
-                  <br></br>
+              <div className="btn-toolbar" role="group" aria-label="Basic example">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.gsutilDownloadNewestWbtOverviewFiles}
+                >Download overview.csv Files</button>&nbsp;
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.gsutilDownloadNewestWbtCountryFiles}
+                >Download country.csv Files</button>&nbsp;
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.gsutilDownloadNewestWbtOsVersionFiles}
+                >Download os_version.csv Files</button>&nbsp;
+              </div>
 
-                </div>  {/* className="col-sm-offset-3 col-sm-9" */}
-              </div> {/* form-group */}
+            </div>
             </div>
           </div>
 
@@ -412,30 +446,24 @@ class ListWbtApps extends Component {
               </div>
               <br/>
               <div className="btn-toolbar" role="group" aria-label="Basic example">
-                <div className="">
-
-                  <div className="pull-left">
-                    <button
+                <button
                       type="button"
                       className="btn btn-primary"
                       onClick={this.onProcessAllOverviewFilesInFolder}
-                    >Extract overview.csv files data</button>&nbsp;
-                  </div>
-                  <div className="col-sm-offset-4">
-                    <button
+                    >Extract overview.csv files data
+                </button>&nbsp;
+                <button
                       type="button"
                       className="btn btn-primary"
                       onClick={this.onProcessListOfApps}
-                    >Get all Data</button>&nbsp;
-                  </div>
-                  <div className="col-sm-offset-6">
-                    <button
+                    >Get all Data
+                </button>&nbsp;
+                <button
                       type="button"
                       className="btn btn-primary"
                       onClick={this.onDisplayDataInTable}
-                    >Display Data in Table</button>&nbsp;
-                  </div>
-                </div>
+                    >Display Data in Table
+                </button>&nbsp;
               </div>
               <br/>
               <div className="form-group">
@@ -466,11 +494,7 @@ class ListWbtApps extends Component {
               </BootstrapTable>
             </div>
           </div>
-
         </div>
-
-      </div>
-
     );
   }
 }
