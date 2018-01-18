@@ -15,7 +15,7 @@ import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 const app = electron.remote;
 const dialog = app.dialog;
 const jsonData = require('./SABprojectsData.json');
-const countries = require("i18n-iso-countries");
+const countriesIso = require("i18n-iso-countries");
 var gplay = require('google-play-scraper');
 
 var path = require('path');
@@ -32,6 +32,7 @@ class ImportCsvFileWithPapaParse extends Component {
     csvOverviewFileData : array,
     csvCountryFileData : array,
     countryTableData: array,
+    countryDataAllApps: array,
     csvOsVersionFileData : array,
     osVersionTableData: array,
 
@@ -66,6 +67,7 @@ class ImportCsvFileWithPapaParse extends Component {
       csvOverviewFileData: [[1],[2]],
       csvCountryFileData: [[1],[2]],
       countryTableData: ['some initial state'],
+      countryDataAllApps: [],
 
 
       transactionDate: 'transactionDate',
@@ -108,7 +110,7 @@ class ImportCsvFileWithPapaParse extends Component {
 
   onProcessAllCountryFilesInFolder = () =>  {
     console.log('called onProcessAllCountryFilesInFolder');
-    this.setState({ listOfApps: [] });
+    this.setState({ countryDataAllApps: [] });
     let directoryPath = this.state.appsFolder;
     fs.readdir(directoryPath, this.saveAppDataFromEachCountriesFiles);
     console.log('end of onProcessAllCountryFilesInFolder');
@@ -130,13 +132,54 @@ class ImportCsvFileWithPapaParse extends Component {
   }
 
   getAppDataFromCountriesFile = (fileName) => {
-    //console.log('entering getAppDataFromCountriesFile');
+    console.log('entering getAppDataFromCountriesFile');
     // Do whatever you want to do with the file
     let fileNamePath = path.join(this.state.appsFolder, fileName);
-    console.log('fileNamePath--> ' + fileNamePath);
-    //this.parseDataWithPapaParse(fileNamePath, this.doStuffCountriesFile);
-    //console.log('leaving getAppDataFromCountriesFile');
+    //console.log('fileNamePath--> ' + fileNamePath);
+    this.parseDataWithPapaParse(fileNamePath, this.doStuffCountriesFile);
+    console.log('leaving getAppDataFromCountriesFile');
   }
+  doStuffCountriesFile = (data) => {
+      //Data is usable here
+      console.log(data);
+      //this.setState({ csvCountryFileData: data });
+      //console.log('Column Headings in file: ');
+      //console.log(data[0]);
+      const lastEntry = data[data.length - 2 ];
+      console.log('First entry in file: ');
+      //this.setState({ oneDataItem: lastEntry });
+      //console.log(lastEntry);
+      //console.log('Date: ' + lastEntry[0]);
+      //this.setState({ countryTransDate: lastEntry[0] });
+      //console.log('Package Name: ' + lastEntry[1]);
+      //this.getGooglePlayAppResults(lastEntry[1]);
+      let packageName = lastEntry[1];
+      console.log(packageName);
+      console.log('Country: ' + lastEntry[2]);
+      let lastTransactionDate = lastEntry[0];
+      let i = data.length - 2;
+      var appData = [];
+      var countryRow = {};
+      console.log(data[i][0]);
+      while (data[i][0] === lastTransactionDate) {
+        let row = data[i];
+        //console.log('Code: ' + row[2] + ', TotalInstalls: ' + row[6] + ', ActiveDevices: ' + row[9] +", Country => " + countriesIso.getName(row[2], "en") );
+        if (row[2] == "") {
+          countryRow = { "code": "??", "installs": row[6], "active": row[9], "country": "unknown"};
+        } else {
+          countryRow = { "code": row[2], "installs": row[6], "active": row[9], "country": countriesIso.getName(row[2], "en")};
+        }
+        console.log (countryRow);
+        appData.push(countryRow);
+        //console.log(tableData);
+        i--;
+      }
+      let countryEntry = { "packageName": packageName, "countryData": appData};
+      let countryAllData = this.state.countryDataAllApps;
+      countryAllData.push(countryEntry);
+      this.setState({ countryDataAllApps: countryAllData});
+  }
+
   doStuffCountry = (data) => {
       //Data is usable here
       console.log(data);
@@ -159,11 +202,11 @@ class ImportCsvFileWithPapaParse extends Component {
       console.log(data[i][0]);
       while (data[i][0] === lastTransactionDate) {
         let row = data[i];
-        //console.log('Code: ' + row[2] + ', TotalInstalls: ' + row[6] + ', ActiveDevices: ' + row[9] +", Country => " + countries.getName(row[2], "en") );
+        //console.log('Code: ' + row[2] + ', TotalInstalls: ' + row[6] + ', ActiveDevices: ' + row[9] +", Country => " + countriesIso.getName(row[2], "en") );
         if (row[2] == "") {
           tableRow = { "code": "??", "installs": row[6], "active": row[9], "country": "unknown"};
         } else {
-          tableRow = { "code": row[2], "installs": row[6], "active": row[9], "country": countries.getName(row[2], "en")};
+          tableRow = { "code": row[2], "installs": row[6], "active": row[9], "country": countriesIso.getName(row[2], "en")};
         }
         console.log (tableRow);
         tableData.push(tableRow);
@@ -264,7 +307,6 @@ class ImportCsvFileWithPapaParse extends Component {
       var tableRow = {};
       while (data[i][0] === lastTransactionDate) {
         let row = data[i];
-        //console.log('Code: ' + row[2] + ', TotalInstalls: ' + row[6] + ', ActiveDevices: ' + row[9] +", Country => " + countries.getName(row[2], "en") );
         if (row[2] == "") {
           tableRow = { "osVersion": "unknown", "installs": row[6], "active": row[9]};
         } else {
