@@ -194,29 +194,37 @@ class ListWbtApps extends Component {
     let totalUserInstalls =  packageInfo[5];
     let activeDeviceInstalls = packageInfo[8];
     // eg 'org.scriptureearth.adj.nt.apk'
-    gplay.app({appId: appPackageName, throttle: 5})
+    gplay.app({appId: appPackageName, throttle: 10})
         .then((value) => {
+
           this.setState({ titleFromScraperApp: value.title });
 
           let tableEntries = this.state.tableOfApps2;
           let tableEntry = { "packageName": appPackageName, "title": value.title, "score": value.score,
-              "totalInstalls": totalUserInstalls, "activeInstalls": activeDeviceInstalls, "link": 'l2.play.google.com'};
+              "totalInstalls": totalUserInstalls, "activeInstalls": activeDeviceInstalls};
           tableEntries.push(tableEntry);
           this.setState({ tableOfApps2: tableEntries });
 
-          let appTitles = this.state.listOfAppTitles;
-          let appInfo = { "packageName": appPackageName, "title": value.title, "score": value.score};
-          appTitles.push(appInfo);
+          //let appTitles = this.state.listOfAppTitles;
+          //let appInfo = { "packageName": appPackageName, "title": value.title, "score": value.score};
+          //appTitles.push(appInfo);
           //console.log('App Title gplay--> ' + value.title);
-          this.setState({ listOfAppTitles: appTitles });
+          //this.setState({ listOfAppTitles: appTitles });
         }).catch( (fromReject) => {
-          console.log('this package returned a REJECT promise error -->' + appPackageName);
-          console.log('error message is -->' + fromReject);
-          this.setState({ titleFromScraperApp: 'Current App Unplublished' });
-          let appTitles = this.state.listOfAppTitles;
-          let appInfo = { "packageName": appPackageName,  "title": 'unpublished', "score": 0};
-          appTitles.push(appInfo);
-          this.setState({ listOfAppTitles: appTitles });
+          let tableEntries = this.state.tableOfApps2;
+          let tableEntry = { "packageName": appPackageName, "title": 'UNPUBLISHED', "score": 'UNPUBLISHED',
+              "totalInstalls": totalUserInstalls, "activeInstalls": activeDeviceInstalls};
+          tableEntries.push(tableEntry);
+          this.setState({ tableOfApps2: tableEntries });
+          console.log('A REJECT promise occured while running google-play-scraper for ')
+          console.log('this package because it is UNPUBLISHED but has some installs -->');
+          console.log(appPackageName)
+          console.log('error message is --> ' + fromReject);
+          //this.setState({ titleFromScraperApp: 'Current App Unplublished' });
+          //let appTitles = this.state.listOfAppTitles;
+          //let appInfo = { "packageName": appPackageName,  "title": 'UNPUBLISHED', "score": 0};
+          //appTitles.push(appInfo);
+          //this.setState({ listOfAppTitles: appTitles });
         });
     console.log('leaving getGooglePlayAppResults');
   } //================= getGooglePlayAppResults
@@ -273,7 +281,7 @@ class ListWbtApps extends Component {
           console.log('error message is -->' + fromReject);
           this.setState({ titleFromScraperApp: 'Current App Unplublished' });
           let appTitles = this.state.listOfAppTitles;
-          let appInfo = { "packageName": appPackageName,  "title": 'unpublished', "score": 0};
+          let appInfo = { "packageName": appPackageName,  "title": 'UNPUBLISHED', "score": 0};
           appTitles.push(appInfo);
           this.setState({ listOfAppTitles: appTitles });
         });
@@ -330,21 +338,18 @@ class ListWbtApps extends Component {
       {
         title: "Ga'dang - Bible",
         packageName: 'org.wycliffe.gdg.nt.apk',
-        link: 'http://play.google.com',
         totalInstalls: 0,
         activeInstalls: 0
       },
       {
         title: "Garífuna (Caribe) - Bible",
         packageName: 'org.scriptureearth.cab.nt.apk',
-        link: 'http://play.google.com',
         totalInstalls: 0,
         activeInstalls: 0
       },
       {
         title: "Alamblak - Bible",
         packageName: 'org.scriptureearth.amp.nt.apk',
-        link: 'http://play.google.com',
         totalInstalls: 0,
         activeInstalls: 0
       }];
@@ -362,14 +367,12 @@ class ListWbtApps extends Component {
       {
         title: "Ga'dang - Bible",
         packageName: 'org.wycliffe.gdg.nt.apk',
-        link: 'http://play.google.com',
         totalInstalls: 0,
         activeInstalls: 0
       },
       {
         title: "Garífuna (Caribe) - Bible",
         packageName: 'org.scriptureearth.cab.nt.apk',
-        link: 'http://play.google.com',
         totalInstalls: 0,
         activeInstalls: 0
       }];
@@ -486,11 +489,10 @@ class ListWbtApps extends Component {
                 </div>
               </div>
               <BootstrapTable data={wbtApps} headerStyle={ { borderRadius: 0, border: 0, padding : 0, backgroundColor: '#eeeeee'  } } search searchPlaceholder='type items to search for...' multiColumnSearch pagination>
-                  <TableHeaderColumn isKey dataField='title' width='25%'>App Title</TableHeaderColumn>
+                  <TableHeaderColumn isKey dataField='title' width='30%'>App Title</TableHeaderColumn>
                   <TableHeaderColumn dataField='packageName' width='25%'>Package Name</TableHeaderColumn>
-                  <TableHeaderColumn dataField='totalInstalls' width='15%'>Total Installs</TableHeaderColumn>
-                  <TableHeaderColumn dataField='activeInstalls' width='15%'>Active Installs</TableHeaderColumn>
-                  <TableHeaderColumn dataField='link' width='20%'>Link To App</TableHeaderColumn>
+                  <TableHeaderColumn dataField='totalInstalls' width='20%'>Total Installs</TableHeaderColumn>
+                  <TableHeaderColumn dataField='activeInstalls' width='20%'>Active Installs</TableHeaderColumn>
               </BootstrapTable>
             </div>
           </div>
