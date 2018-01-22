@@ -173,13 +173,12 @@ class ListWbtApps extends Component {
   savePackageNamesToArray2 = () => {
     // All done
     console.log('enter of savePackageNamesToArray');
-    let i = 0;
     //console.log(this.state.listOfApps)
-    let tmpListOfPackages = [];
     let tmpListOfApps = [];
     tmpListOfApps = this.state.listOfApps;
     //console.log('tmpListOfApps --->'  + tmpListOfApps);
     //console.log('tmpListOfApps.lengt --->'  + tmpListOfApps.length);
+    let i = 0;
     for (i=0; i < tmpListOfApps.length; i++)
     {
       //console.log('packageName --->'  + packageName);

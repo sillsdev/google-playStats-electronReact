@@ -24,7 +24,6 @@ var fs = require('fs');
 
 class ImportCsvFileWithPapaParse extends Component {
   state: {
-
     csvOverviewFile: string,
     csvCountryFile: string,
     csvOsVersionFile: string,
@@ -32,8 +31,6 @@ class ImportCsvFileWithPapaParse extends Component {
     csvOverviewFileData : array,
     csvCountryFileData : array,
     countryTableData: array,
-    countryDataAllApps: array,
-    osversionDataAllApps: array,
     csvOsVersionFileData : array,
     osVersionTableData: array,
 
@@ -49,18 +46,12 @@ class ImportCsvFileWithPapaParse extends Component {
     reviewsFromScraperApp: string,
     scoreNameFromScraperApp: string,
     versionFromScraperApp: string,
-
-    appsFolderSelected: boolean,
-    appsFolder: string
   }
   constructor() {
     super();
     this.readOverviewCsvFilePP = this.readOverviewCsvFilePP.bind(this);
     this.readCountryCsvFilePP = this.readCountryCsvFilePP.bind(this);
     this.readOsVersionCsvFilePP = this.readOsVersionCsvFilePP.bind(this);
-    this.onSelectAppsFolder = this.onSelectAppsFolder.bind(this);
-    this.onProcessAllCountryFilesInFolder = this.onProcessAllCountryFilesInFolder.bind(this);
-    this.onProcessAllOSversionFilesInFolder = this.onProcessAllOSversionFilesInFolder.bind(this);
     this.state = {
       csvOverviewFile: "no overview.csv file selected yet",
       csvCountryFile: "no country.csv file selected yet",
@@ -69,9 +60,6 @@ class ImportCsvFileWithPapaParse extends Component {
       csvOverviewFileData: [[1],[2]],
       csvCountryFileData: [[1],[2]],
       countryTableData: ['some initial state'],
-      countryDataAllApps: [],
-      osversionDataAllApps: [],
-
 
       transactionDate: 'transactionDate',
       countryTransDate: 'countryTransDate',
@@ -87,149 +75,68 @@ class ImportCsvFileWithPapaParse extends Component {
       reviewsFromScraperApp: 'nada',
       scoreNameFromScraperApp: 'nada',
       versionFromScraperApp: 'nada',
-
-      appsFolderSelected: false,
-      appsFolder: 'appsFolder'
     };
   }
+  getGooglePlayAppResults = (packageName) => {
+    console.log('entering getGooglePlayAppResults');
+    const appPackageName = packageName;
+    // eg 'org.scriptureearth.adj.nt.apk'
+    gplay.app({appId: appPackageName})
+        .then((value) => {
+          this.setState({ titleFromScraperApp: value.title });
+          this.setState({ reviewsFromScraperApp: value.reviews });
+          this.setState({ scoreNameFromScraperApp: value.score });
+          this.setState({ versionFromScraperApp: value.version });
+          console.log(value.title);
+        });
+    console.log('leaving getGooglePlayAppResults');
+  } //================= getGooglePlayAppResults
 
-  onSelectAppsFolder= () =>  {
-  console.log('called onSelectAppsFolder');
-  var path = dialog.showOpenDialog(
-    { title:"Select a folder", properties: ["openDirectory"] }
-  );
-  if(path === undefined){
-      console.log("No destination folder selected");
-      this.setState({ appsFolderSelected: false });
-      this.setState({  appsFolder: '' });
-  }else{
-        //console.log('going to set the path and boolean' + path);
-        this.setState({ appsFolderSelected: true });
-        this.setState({  appsFolder: path[0] });
-        console.log(path[0]);
-    }
-    console.log('end of onSelectAppsFolder');
-  }
-
-  onProcessAllCountryFilesInFolder = () =>  {
-    console.log('called onProcessAllCountryFilesInFolder');
-    this.setState({ countryDataAllApps: [] });
-    let directoryPath = this.state.appsFolder;
-    fs.readdir(directoryPath, this.saveAppDataFromEachCountriesFile);
-    console.log('end of onProcessAllCountryFilesInFolder');
-  }
-
-  onProcessAllOSversionFilesInFolder = () =>  {
-    console.log('called onProcessAllOSversionFilesInFolder');
-    this.setState({ osversionDataAllApps: [] });
-    let directoryPath = this.state.appsFolder;
-    fs.readdir(directoryPath, this.saveAppDataFromEachOSversionFile);
-    console.log('end of onProcessAllOSversionFilesInFolder');
-  }
-
-  saveAppDataFromEachCountriesFile = (err, files) =>  {
-    console.log('called saveAppDataFromEachCountriesFile');
-      //handling error
-      if (err) {
-          return console.log('Unable to scan directory: ' + err);
-      }
-      Promise.all(
-          Array.from(files).map(entry => this.getAppDataFromCountriesFile(entry))
-      ).then(() => {
-          // All done
-          console.log('all done now');
+  parseDataWithPapaParse = (url, callBack) => {
+      Papa.parse(url, {
+          download: true,
+          dynamicTyping: true,
+          complete: function(results) {
+              callBack(results.data);
+          }
       });
-    console.log('end of saveAppDataFromEachCountriesFile');
   }
 
-  saveAppDataFromEachOSversionFile = (err, files) =>  {
-    console.log('called saveAppDataFromEachOSversionFile');
-      //handling error
-      if (err) {
-          return console.log('Unable to scan directory: ' + err);
-      }
-      Promise.all(
-          Array.from(files).map(entry => this.getAppDataFromOSVersionFile(entry))
-      ).then(() => {
-          // All done
-          console.log('all done now');
-      });
-    console.log('end of saveAppDataFromEachOSversionFile');
+  readOverviewCsvFilePP = () => {
+    console.log('entering readOverviewCsvFilePP');
+    const filename = this.state.csvOverviewFile;
+    console.log(filename);
+    this.parseDataWithPapaParse(filename, this.doStuffOverview);
+
+    console.log('leaving readOverviewCsvFilePP');
   }
-  getAppDataFromOSVersionFile = (fileName) => {
-    console.log('entering getAppDataFromOSVersionFile');
-    // Do whatever you want to do with the file
-    let fileNamePath = path.join(this.state.appsFolder, fileName);
-    //console.log('fileNamePath--> ' + fileNamePath);
-    this.parseDataWithPapaParse(fileNamePath, this.doStuffOsVersionFile);
-    console.log('leaving getAppDataFromOSVersionFile');
-  }
-  doStuffOsVersionFile = (data) => {
+  doStuffOverview = (data) => {
       //Data is usable here
       console.log(data);
-      this.setState({ csvOsVersionFileData: data });
+      this.setState({ csvOverviewFileData: data });
+      console.log( data.length);
+      console.log('Column Headings in file: ');
+      console.log(data[0]);
       const lastEntry = data[data.length - 2 ];
-      let packageName = lastEntry[1];
-      console.log('PackageName: ' + packageName);
-      let lastTransactionDate = lastEntry[0];
-      let i = data.length - 2;
-      var tableData = [];
-      var tableRow = {};
-      while (data[i][0] === lastTransactionDate) {
-        let row = data[i];
-        if (row[2] == "") {
-          tableRow = { "osVersion": "unknown", "installs": row[6], "active": row[9]};
-        } else {
-          tableRow = { "osVersion": row[2], "installs": row[6], "active": row[9]};
-        }
-        console.log (tableRow);
-        tableData.push(tableRow);
-        //console.log(tableData);
-        i--;
-      }
-      let osVersionEntry = { "packageName": packageName, "osVersionData": tableData};
-      let osVersionAllData = this.state.osversionDataAllApps;
-      osVersionAllData.push(osVersionEntry);
-      this.setState({ osversionDataAllApps: osVersionAllData});
+      console.log('Last entry in file: ');
+      this.setState({ oneDataItem: lastEntry });
+      console.log(lastEntry);
+      console.log(lastEntry[0]);
+      console.log(lastEntry[1]);
+      console.log(lastEntry[5]);
+      console.log(lastEntry[8]);
+      this.setState({ transactionDate: lastEntry[0] });
+      this.setState({ packageNameFromCsv: lastEntry[1] });
+      this.setState({ totalUserInstalls: lastEntry[5] });
+      this.setState({ activeDeviceInstalls: lastEntry[8] });
   }
+  readCountryCsvFilePP = () => {
+    console.log('entering readCountryCsvFilePP');
+    const filename = this.state.csvCountryFile;
+    this.parseDataWithPapaParse(filename, this.doStuffCountry);
 
-  getAppDataFromCountriesFile = (fileName) => {
-    console.log('entering getAppDataFromCountriesFile');
-    // Do whatever you want to do with the file
-    let fileNamePath = path.join(this.state.appsFolder, fileName);
-    //console.log('fileNamePath--> ' + fileNamePath);
-    this.parseDataWithPapaParse(fileNamePath, this.doStuffCountriesFile);
-    console.log('leaving getAppDataFromCountriesFile');
+    console.log('leaving readCountryCsvFilePP');
   }
-  doStuffCountriesFile = (data) => {
-      //Data is usable here
-      //console.log(data);
-      const lastEntry = data[data.length - 2 ];
-      let packageName = lastEntry[1];
-      console.log('PackageName: ' + packageName);
-      let lastTransactionDate = lastEntry[0];
-      let i = data.length - 2;
-      var appData = [];
-      var countryRow = {};
-      while (data[i][0] === lastTransactionDate) {
-        let row = data[i];
-        //console.log('Code: ' + row[2] + ', TotalInstalls: ' + row[6] + ', ActiveDevices: ' + row[9] +", Country => " + countriesIso.getName(row[2], "en") );
-        if (row[2] == "") {
-          countryRow = { "code": "??", "installs": row[6], "active": row[9], "country": "unknown"};
-        } else {
-          countryRow = { "code": row[2], "installs": row[6], "active": row[9], "country": countriesIso.getName(row[2], "en")};
-        }
-        //console.log (countryRow);
-        appData.push(countryRow);
-        //console.log(tableData);
-        i--;
-      }
-      let countryEntry = { "packageName": packageName, "countryData": appData};
-      let countryAllData = this.state.countryDataAllApps;
-      countryAllData.push(countryEntry);
-      this.setState({ countryDataAllApps: countryAllData});
-  }
-
   doStuffCountry = (data) => {
       //Data is usable here
       console.log(data);
@@ -266,67 +173,6 @@ class ImportCsvFileWithPapaParse extends Component {
       this.setState({ countryTableData: tableData});
   }
 
-
-  getGooglePlayAppResults = (packageName) => {
-    console.log('entering getGooglePlayAppResults');
-    const appPackageName = packageName;
-    // eg 'org.scriptureearth.adj.nt.apk'
-    gplay.app({appId: appPackageName})
-        .then((value) => {
-          this.setState({ titleFromScraperApp: value.title });
-          this.setState({ reviewsFromScraperApp: value.reviews });
-          this.setState({ scoreNameFromScraperApp: value.score });
-          this.setState({ versionFromScraperApp: value.version });
-          console.log(value.title);
-        });
-    console.log('leaving getGooglePlayAppResults');
-  } //================= getGooglePlayAppResults
-
-  readOverviewCsvFilePP = () => {
-    console.log('entering readOverviewCsvFilePP');
-    const filename = this.state.csvOverviewFile;
-    console.log(filename);
-    this.parseDataWithPapaParse(filename, this.doStuffOverview);
-
-    console.log('leaving readOverviewCsvFilePP');
-  }
-  parseDataWithPapaParse = (url, callBack) => {
-      Papa.parse(url, {
-          download: true,
-          dynamicTyping: true,
-          complete: function(results) {
-              callBack(results.data);
-          }
-      });
-  }
-  doStuffOverview = (data) => {
-      //Data is usable here
-      console.log(data);
-      this.setState({ csvOverviewFileData: data });
-      console.log( data.length);
-      console.log('Column Headings in file: ');
-      console.log(data[0]);
-      const lastEntry = data[data.length - 2 ];
-      console.log('Last entry in file: ');
-      this.setState({ oneDataItem: lastEntry });
-      console.log(lastEntry);
-      console.log(lastEntry[0]);
-      console.log(lastEntry[1]);
-      console.log(lastEntry[5]);
-      console.log(lastEntry[8]);
-      this.setState({ transactionDate: lastEntry[0] });
-      this.setState({ packageNameFromCsv: lastEntry[1] });
-      this.setState({ totalUserInstalls: lastEntry[5] });
-      this.setState({ activeDeviceInstalls: lastEntry[8] });
-  }
-  readCountryCsvFilePP = () => {
-    console.log('entering readCountryCsvFilePP');
-    const filename = this.state.csvCountryFile;
-    this.parseDataWithPapaParse(filename, this.doStuffCountry);
-
-    console.log('leaving readCountryCsvFilePP');
-  }
-
   readOsVersionCsvFilePP = () => {
     console.log('entering readOsVersionCsvFilePP');
     const filename = this.state.csvOsVersionFile;
@@ -334,8 +180,6 @@ class ImportCsvFileWithPapaParse extends Component {
 
     console.log('leaving readOsVersionCsvFilePP');
   }
-
-
   doStuffOsVersion = (data) => {
       //Data is usable here
       console.log(data);
@@ -483,55 +327,61 @@ class ImportCsvFileWithPapaParse extends Component {
 
     return (
     <div className="container">
-        <div className="panel panel-primary">
-          <div className="panel-heading apt-addheading">Scripture App Download Stats</div>
-          <div className="panel-body">
-            <form className="form" onSubmit={this.localHandleSend}>
-              <div className="form-group">
-                <label htmlFor="wbtStatementFile">Select Downloaded (csv) File and Display Stats</label>
-                <br></br><br></br>
-                <div className="panel panel-info">
-                  <div className="panel-heading">Display Results from Overview file...</div>
-                  <div className="panel-body">
-                    <div className="btn-toolbar" role="group" aria-label="Basic example">
-                      <div className="pull-left">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={this.selectCsvOverviewFile}
-                        >Select ...overview.csv File</button>&nbsp;
+        {/* ===================================================================================================================== */}
+        {/* ===================================================================================================================== */}
+        {/* ===================================================================================================================== */}
+        {/* ===================================================================================================================== */}
+        <div className="container">
+          <div className="panel panel-primary">
+            <div className="panel-heading apt-addheading">Scripture App Download Stats</div>
+            <div className="panel-body">
+              <form className="form" onSubmit={this.localHandleSend}>
+                <div className="form-group">
+                  <label htmlFor="wbtStatementFile">Select Downloaded (csv) File and Display Stats</label>
+                  <br></br><br></br>
+                  <div className="panel panel-info">
+                    <div className="panel-heading">Display Results from Overview file...</div>
+                    <div className="panel-body">
+                      <div className="btn-toolbar" role="group" aria-label="Basic example">
+                        <div className="pull-left">
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={this.selectCsvOverviewFile}
+                          >Select ...overview.csv File</button>&nbsp;
+                        </div>
+                        <div className="col-sm-offset-3">
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={this.readOverviewCsvFilePP}
+                          >Process CSV File Papa</button>&nbsp;
+                        </div>
                       </div>
-                      <div className="col-sm-offset-3">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={this.readOverviewCsvFilePP}
-                        >Process CSV File Papa</button>&nbsp;
-                      </div>
+                      <div className="form-text" id="csvOverviewFileId" >{this.state.csvOverviewFile}</div>
+                      <div className="form-group">
+                        <label className="col-sm-6 control-label" htmlFor="transactionDate">Date</label>
+                        <div className="form-text" id="transactionDate" placeholder="transactionDate" >{transactionDate}</div>
+                        <br></br>
+                        <label className="col-sm-6 control-label" htmlFor="packageNameFromCsv">Package Name</label>
+                        <div className="form-text" id="packageNameFromCsv" placeholder="packageNameFromCsv" >{packageNameFromCsv}</div>
+                        <br></br>
+                        <label className="col-sm-6 control-label" htmlFor="totalUserInstalls">Total User Installs</label>
+                        <div className="form-text" id="totalUserInstalls" placeholder="totalUserInstalls" >{totalUserInstalls}</div>
+                        <br></br>
+                        <label className="col-sm-6 control-label" htmlFor="activeDeviceInstalls">Active Device Installs</label>
+                        <div className="form-text" id="activeDeviceInstalls" placeholder="activeDeviceInstalls" >{activeDeviceInstalls}</div>
+                        <br></br>
+                      </div> {/* form-group */}
                     </div>
-                    <div className="form-text" id="csvOverviewFileId" >{this.state.csvOverviewFile}</div>
-                    <div className="form-group">
-                      <label className="col-sm-6 control-label" htmlFor="transactionDate">Date</label>
-                      <div className="form-text" id="transactionDate" placeholder="transactionDate" >{transactionDate}</div>
-                      <br></br>
-                      <label className="col-sm-6 control-label" htmlFor="packageNameFromCsv">Package Name</label>
-                      <div className="form-text" id="packageNameFromCsv" placeholder="packageNameFromCsv" >{packageNameFromCsv}</div>
-                      <br></br>
-                      <label className="col-sm-6 control-label" htmlFor="totalUserInstalls">Total User Installs</label>
-                      <div className="form-text" id="totalUserInstalls" placeholder="totalUserInstalls" >{totalUserInstalls}</div>
-                      <br></br>
-                      <label className="col-sm-6 control-label" htmlFor="activeDeviceInstalls">Active Device Installs</label>
-                      <div className="form-text" id="activeDeviceInstalls" placeholder="activeDeviceInstalls" >{activeDeviceInstalls}</div>
-                      <br></br>
-                    </div> {/* form-group */}
                   </div>
-                </div>
-                {/* ===================================================================================================================== */}
-
-              </div> {/* form-group */}
-            </form>
+                  {/* ===================================================================================================================== */}
+                </div> {/* form-group */}
+              </form>
+            </div>
           </div>
         </div>
+        {/* ===================================================================================================================== */}
         <div className="container">
         <div className="panel panel-primary">
           {/* ===================================================================================================================== */}
@@ -550,19 +400,6 @@ class ImportCsvFileWithPapaParse extends Component {
                     onClick={this.readCountryCsvFilePP}
                   >Process country.csv File Papa</button>&nbsp;
               </div><br/>
-              <div className="btn-toolbar" role="group" aria-label="Basic example">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.onSelectAppsFolder}
-                >Select countries Folder for Apps</button>&nbsp;
-                <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={this.onProcessAllCountryFilesInFolder}
-                    >Extract ...countries.csv files data
-                </button>&nbsp;
-              </div>
               <div className="form-text" id="csvOverviewFileId" >{this.state.csvCountryFile}</div>
                 <div className="form-group">
                   <label className="col-xs-6 col-md-4 col-sm-4 control-label" htmlFor="countryTransDate">Date</label>
@@ -618,19 +455,6 @@ class ImportCsvFileWithPapaParse extends Component {
                 </div>
               </div>
               <br/>
-              <div className="btn-toolbar" role="group" aria-label="Basic example">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.onSelectAppsFolder}
-                >Select OSversion Folder for Apps</button>&nbsp;
-                <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={this.onProcessAllOSversionFilesInFolder}
-                    >Extract ...OSversion.csv files data
-                </button>&nbsp;
-              </div>
               <div className="form-text" id="csvOsVersionFileId" >{this.state.csvOsVersionFile}</div>
             </div>
             <label className="col-xs-6 col-md-4 col-sm-4 control-label" htmlFor="osVersionTransDate">Date</label>
