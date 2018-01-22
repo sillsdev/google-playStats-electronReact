@@ -47,9 +47,6 @@ class ListWbtApps extends Component {
     this.onProcessListOfApps = this.onProcessListOfApps.bind(this);
     this.onDisplayDataInTable = this.onDisplayDataInTable.bind(this);
 
-    this.gsutilDownloadNewestWbtOverviewFiles = this.gsutilDownloadNewestWbtOverviewFiles.bind(this);
-    this.gsutilDownloadNewestWbtCountryFiles = this.gsutilDownloadNewestWbtCountryFiles.bind(this);
-    this.gsutilDownloadNewestWbtOsVersionFiles = this.gsutilDownloadNewestWbtOsVersionFiles.bind(this);
     this.readOverviewCsvFilePP = this.readOverviewCsvFilePP.bind(this);
     this.getGooglePlayAppResults = this.getGooglePlayAppResults.bind(this);
     this.savePackageNamesToArray = this.savePackageNamesToArray.bind(this);
@@ -287,50 +284,6 @@ class ListWbtApps extends Component {
     console.log('leaving getGooglePlayAppResults');
   } //================= getGooglePlayAppResults
 
-
-  gsutilDownloadNewestWbtOverviewFiles = () => {
-    console.log('entering gsutilDownloadStatFilesFromGooglePlay');
-    this.gsutilDownloadStatFilesFromGooglePlay('overview-files/', '*_overview.csv ');
-    console.log('leaving gsutilDownloadNewestWbtOverviewFiles');
-  }
-  gsutilDownloadNewestWbtCountryFiles = () => {
-    console.log('entering gsutilDownloadStatFilesFromGooglePlay');
-    this.gsutilDownloadStatFilesFromGooglePlay('countries-files/', '*_country.csv ');
-    console.log('leaving gsutilDownloadNewestWbtOverviewFiles');
-  }
-  gsutilDownloadNewestWbtOsVersionFiles = () => {
-    console.log('entering gsutilDownloadStatFilesFromGooglePlay');
-    this.gsutilDownloadStatFilesFromGooglePlay('osversion-files/','*_os_version.csv ');
-    console.log('leaving gsutilDownloadNewestWbtOverviewFiles');
-  }
-
-  gsutilDownloadStatFilesFromGooglePlay = (path, filetype) => {
-    console.log('entering gsutilDownloadStatFilesFromGooglePlay');
-    //first remove old filesToDownload
-    let command = 'rm app/components/gsutil-download-' + path + '*.*';
-    console.log(command);
-    cmd.run(command);
-    console.log('before');
-    setTimeout(function(){
-        console.log('after');
-    },30000000);
-
-    let filesToDownload = 'gs://pubsite_prod_rev_05224823036325035822/stats/installs/*' + dt.getFullYear() + monthsNums[dt.getMonth()] + filetype;
-    console.log(filesToDownload);
-    command = 'gsutil cp -r ' + filesToDownload + 'app/components/gsutil-download-' + path;
-    console.log(command);
-    cmd.run(command);
-    /*
-    cmd.get(
-        'ls app/components/gsutil-download-currentMonth',
-        function(err, data, stderr){
-            console.log('the dir app/components/gsutil-download-currentMonth contains these files :\n\n',data)
-        }
-    );
-    */
-    console.log('leaving gsutilDownloadStatFilesFromGooglePlay');
-  }
-
   addEntryToTable = () => {
     console.log('entering addEntryToTable');
     let wbtAppsUpdated = [
@@ -354,8 +307,6 @@ class ListWbtApps extends Component {
       }];
 
       this.setState({ tableOfApps: wbtAppsUpdated });
-
-    //========================== search
     console.log('leaving addEntryToTable');
   }
 
@@ -375,14 +326,6 @@ class ListWbtApps extends Component {
         totalInstalls: 0,
         activeInstalls: 0
       }];
-      let dt = new Date();
-      let months = [
-      'January', 'February', 'March', 'April', 'May',
-      'June', 'July', 'August', 'September',
-      'October', 'November', 'December'
-      ];
-      let currentMonthYear = 'currentMonthYear';
-      currentMonthYear =  months[dt.getMonth()]  + ' '+ dt.getFullYear();
 
       let currentAppTitle = 'currentAppTitle';
       if (this.state.titleFromScraperApp != '')
@@ -395,37 +338,6 @@ class ListWbtApps extends Component {
 
     return (
       <div className="panel-group">
-        <div className="panel panel-primary">
-          <div className="panel-heading apt-addheading">Get Full List</div>
-          <div className="panel panel-info">
-            <div className="panel-heading">Download This Month's Overview Files for All WBT Apps</div>
-            <div className="panel-body">
-              <div className="form-group">
-                <label className="col-sm-4 control-label" htmlFor="currentMonthYear">Current Month and Year</label>
-                <div className="form-text" id="currentMonthYear" placeholder="currentMonthYear" >{currentMonthYear}</div>
-              </div> {/* form-group */}
-              <div className="btn-toolbar" role="group" aria-label="Basic example">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.gsutilDownloadNewestWbtOverviewFiles}
-                >Download overview.csv Files</button>&nbsp;
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.gsutilDownloadNewestWbtCountryFiles}
-                >Download country.csv Files</button>&nbsp;
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.gsutilDownloadNewestWbtOsVersionFiles}
-                >Download os_version.csv Files</button>&nbsp;
-              </div>
-
-            </div>
-            </div>
-          </div>
-
           <div className="panel panel-info">
             <div className="panel-heading">Display All Wycliffe Bible Translators Apps</div>
             <div className="panel-body">
@@ -436,15 +348,17 @@ class ListWbtApps extends Component {
                     type="button"
                     className="btn btn-primary"
                     onClick={this.onSelectAppsFolder}
-                  >Select Folder for Apps</button>&nbsp;
+                  >1) Select Folder for overview.csv files</button>&nbsp;
                 </div>
-                <div className="col-sm-offset-4">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.onListFilesInFolder}
-                  >console.log ==> files In Folder</button>&nbsp;
-                </div>
+                { /*
+                  <div className="col-sm-offset-4">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.onListFilesInFolder}
+                    >console.log ==> files In Folder</button>&nbsp;
+                  </div>
+                */}
               </div>
               <br/>
               <div className="btn-toolbar" role="group" aria-label="Basic example">
@@ -452,19 +366,19 @@ class ListWbtApps extends Component {
                       type="button"
                       className="btn btn-primary"
                       onClick={this.onProcessAllOverviewFilesInFolder}
-                    >Extract overview.csv files data
+                    >2) Extract overview.csv files data
                 </button>&nbsp;
                 <button
                       type="button"
                       className="btn btn-primary"
                       onClick={this.onProcessListOfApps}
-                    >Get all Data
+                    >3) Process Data For Table
                 </button>&nbsp;
                 <button
                       type="button"
                       className="btn btn-primary"
                       onClick={this.onDisplayDataInTable}
-                    >Display Data in Table
+                    >4) Display Data in Table
                 </button>&nbsp;
               </div>
               <br/>
@@ -478,20 +392,11 @@ class ListWbtApps extends Component {
           <div className="panel panel-info">
             <div className="panel-heading">Table of Apps</div>
             <div className="panel-body">
-              <div className="btn-toolbar" role="group" aria-label="Basic example">
-                <div className="pull-left">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.addEntryToTable}
-                  >Add Entry to Table</button>&nbsp;
-                </div>
-              </div>
               <BootstrapTable data={wbtApps} headerStyle={ { borderRadius: 0, border: 0, padding : 0, backgroundColor: '#eeeeee'  } } search searchPlaceholder='type items to search for...' multiColumnSearch pagination>
                   <TableHeaderColumn isKey dataField='title' width='30%'>App Title</TableHeaderColumn>
-                  <TableHeaderColumn dataField='packageName' width='25%'>Package Name</TableHeaderColumn>
-                  <TableHeaderColumn dataField='totalInstalls' width='20%'>Total Installs</TableHeaderColumn>
-                  <TableHeaderColumn dataField='activeInstalls' width='20%'>Active Installs</TableHeaderColumn>
+                  <TableHeaderColumn dataField='packageName' width='35%'>Package Name</TableHeaderColumn>
+                  <TableHeaderColumn dataField='totalInstalls' width='15%'>Total Installs</TableHeaderColumn>
+                  <TableHeaderColumn dataField='activeInstalls' width='15%'>Active Installs</TableHeaderColumn>
               </BootstrapTable>
             </div>
           </div>

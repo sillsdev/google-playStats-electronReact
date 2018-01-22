@@ -288,18 +288,18 @@ class ImportCsvDataAllApps extends Component {
                     type="button"
                     className="btn btn-primary"
                     onClick={this.onSelectAppsFolder}
-                  >Select overview Folder for Apps</button>&nbsp;
+                  >1) Select overview Folder for Apps</button>&nbsp;
                   <button
                         type="button"
                         className="btn btn-primary"
                         onClick={this.onProcessAllOverviewFilesInFolder}
-                      >Extract ...overview.csv files data
+                      >2) Extract ...overview.csv files data
                   </button>&nbsp;
                   <button
                         type="button"
                         className="btn btn-primary"
                         onClick={this.savePackageTitlesToArray}
-                      >Run Scraper for App Titles
+                      >3) Run Scraper for App Titles
                   </button>&nbsp;
                 </div>
               </div>
@@ -318,12 +318,12 @@ class ImportCsvDataAllApps extends Component {
                     type="button"
                     className="btn btn-primary"
                     onClick={this.onSelectAppsFolder}
-                  >Select countries Folder for Apps</button>&nbsp;
+                  >1) Select countries Folder for Apps</button>&nbsp;
                   <button
                         type="button"
                         className="btn btn-primary"
                         onClick={this.onProcessAllCountryFilesInFolder}
-                      >Extract ...countries.csv files data
+                      >2) Extract ...countries.csv files data
                   </button>&nbsp;
                 </div>
               </div>
@@ -343,12 +343,12 @@ class ImportCsvDataAllApps extends Component {
                     type="button"
                     className="btn btn-primary"
                     onClick={this.onSelectAppsFolder}
-                  >Select OSversion Folder for Apps</button>&nbsp;
+                  >1) Select OSversion Folder for Apps</button>&nbsp;
                   <button
                         type="button"
                         className="btn btn-primary"
                         onClick={this.onProcessAllOSversionFilesInFolder}
-                      >Extract ...OSversion.csv files data
+                      >2) Extract ...OSversion.csv files data
                   </button>&nbsp;
                 </div>
               </div>

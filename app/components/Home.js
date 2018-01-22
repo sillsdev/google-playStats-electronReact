@@ -13,6 +13,8 @@ import Table from '../components/Table';
 import DisplayGoogleWbtApps from '../components/DisplayGoogleWbtApps';
 import ListWbtApps from '../components/ListWbtApps';
 import ImportCsvDataAllApps from '../components/ImportCsvDataAllApps';
+import DownloadAllAppsCsvDataFiles from '../components/DownloadAllAppsCsvDataFiles';
+
 
 const app = electron.remote;
 const dialog = app.dialog;
@@ -59,13 +61,6 @@ export default class Home extends Component {
     console.log('leaving mainonChangepropInHome');
   }
 
-  /*
-  <GooglePlayScraper
-    propInHome={this.state.googlePlayScaperProp}
-    onChangepropInHome={this.mainonChangepropInHome}
-  />
-  */
-
   render() {
     return (
       <div>
@@ -73,9 +68,22 @@ export default class Home extends Component {
           <div className="App-header">
             <h2>Scripture Apps Install Stats</h2>
           </div>
-          <ListWbtApps />
+          <DownloadAllAppsCsvDataFiles/>
           <ImportCsvDataAllApps/>
+
+          <ListWbtApps />
+          {/* ===================================================================================================================== */}
+          {/*
           <ImportCsvFileWithPapaParse />
+          */}
+          {/* ===================================================================================================================== */}
+          {/*
+          <GooglePlayScraper
+            propInHome={this.state.googlePlayScaperProp}
+            onChangepropInHome={this.mainonChangepropInHome}
+          />
+          */}
+          {/* ===================================================================================================================== */}
         </div>
       </div>
     );
