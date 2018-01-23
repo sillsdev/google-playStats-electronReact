@@ -24,7 +24,9 @@ class ImportCsvDataAllApps extends Component {
     listOfAppTitles : array,
     titleFromScraperApp: string,
     totalNumberOfWBTApps: string,
-    numberOfAppTitlesProcessed: string
+    numberOfAppTitlesProcessed: string,
+
+    combinedDataToPersist: array
 
   }
   constructor() {
@@ -44,7 +46,9 @@ class ImportCsvDataAllApps extends Component {
       listOfAppTitles: [],
       titleFromScraperApp: '',
       totalNumberOfWBTApps: 'no count yet',
-      numberOfAppTitlesProcessed: 'none yet'
+      numberOfAppTitlesProcessed: 'none yet',
+
+      combinedDataToPersist: []
     };
   }
   onSelectAppsFolder= () =>  {
@@ -290,7 +294,7 @@ class ImportCsvDataAllApps extends Component {
     let overviewData = this.state.overviewDataAllApps;
     let appTitles = this.state.listOfAppTitles;
 
-    let combinedData = {};
+    let combinedData = [];
     let combinedDataOneApp = {};
     let packageName = '';
     let appTitle = '';
@@ -300,7 +304,7 @@ class ImportCsvDataAllApps extends Component {
     let countriesData = '';
 
     let i = 0;
-    for (i=0; i < 3; i++) {
+    for (i=0; i < appTitles.length; i++) {
       packageName = appTitles[i].packageName;
       appTitle = appTitles[i].title;
       totalUserInstalls = overviewData[i][5];
@@ -313,11 +317,49 @@ class ImportCsvDataAllApps extends Component {
         activeDeviceInstalls: activeDeviceInstalls,
         osversionData: osVersionData,
         countriesData: countriesData };
-      console.log(combinedDataOneApp);
+      //console.log(combinedDataOneApp);
+      combinedData.push(combinedDataOneApp);
     }
-
+    this.setState({combinedDataToPersist: combinedData});
     console.log('leaving onCombineDataAndSave');
   }
+
+
+
+  onSaveAllAppsDataToFile = () => {
+    let jsonData = [
+      {
+        osVersion: "Android R2D2",
+        installs:16,
+        active: 11
+      },
+      {
+        osVersion: "Android RP3",
+        installs:16345959,
+        active: 1
+      }];
+    let content = JSON.stringify(jsonData);
+    // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
+    let dataToSave = this.state.combinedDataToPersist;
+    content = JSON.stringify(dataToSave);
+    dialog.showSaveDialog({defaultPath: '~/app/components/output/allAppsData.json'}, (fileName) => {
+      console.log('fileName is ==> '+ fileName);
+        if (fileName === undefined){
+            console.log("You didn't save the file");
+            return;
+        }
+
+        // fileName is a string that contains the path and filename created in the save file dialog.
+        fs.writeFile(fileName, content, (err) => {
+            if(err){
+                alert("An error ocurred creating the file "+ err.message)
+            }
+
+            alert("The file has been succesfully saved");
+        });
+    });
+  }
+
 
 
   render() {
@@ -432,7 +474,12 @@ class ImportCsvDataAllApps extends Component {
                     type="button"
                     className="btn btn-primary"
                     onClick={this.onCombineDataAndSave}
-                  >Combine Data And Save</button>&nbsp;
+                  >Combine Data</button>&nbsp;
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.onSaveAllAppsDataToFile}
+                  >Save As...</button>&nbsp;
                 </div>
                 <br/>
                 <div className="form-group">
