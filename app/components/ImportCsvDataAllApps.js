@@ -283,6 +283,42 @@ class ImportCsvDataAllApps extends Component {
     console.log('leaving getGooglePlayAppResults');
   } //================= getGooglePlayAppResults
 
+  onCombineDataAndSave = () => {
+    console.log('entering onCombineDataAndSave');
+    let countryDataArray = this.state.countryDataAllApps;
+    let osversionDataArray = this.state.osversionDataAllApps;
+    let overviewData = this.state.overviewDataAllApps;
+    let appTitles = this.state.listOfAppTitles;
+
+    let combinedData = {};
+    let combinedDataOneApp = {};
+    let packageName = '';
+    let appTitle = '';
+    let totalUserInstalls =  '';
+    let activeDeviceInstalls = '';
+    let osVersionData = '';
+    let countriesData = '';
+
+    let i = 0;
+    for (i=0; i < 3; i++) {
+      packageName = appTitles[i].packageName;
+      appTitle = appTitles[i].title;
+      totalUserInstalls = overviewData[i][5];
+      activeDeviceInstalls = overviewData[i][8];
+      osVersionData = osversionDataArray[i].osVersionData;
+      countriesData = countryDataArray[i].countryData
+      combinedDataOneApp = { packageName: packageName,
+        appTitle: appTitle,
+        totalUserInstalls: totalUserInstalls,
+        activeDeviceInstalls: activeDeviceInstalls,
+        osversionData: osVersionData,
+        countriesData: countriesData };
+      console.log(combinedDataOneApp);
+    }
+
+    console.log('leaving onCombineDataAndSave');
+  }
+
 
   render() {
     let numberOfAppTitlesProcessed = this.state.numberOfAppTitlesProcessed;
@@ -290,6 +326,7 @@ class ImportCsvDataAllApps extends Component {
     let currentAppTitle = 'currentAppTitle';
     if (this.state.titleFromScraperApp != '')
     currentAppTitle = this.state.titleFromScraperApp;
+    let jsonDataFile = 'jsonDataFile';
     return (
       <div className="container">
         {/* ===================================================================================================================== */}
@@ -378,6 +415,30 @@ class ImportCsvDataAllApps extends Component {
                       >2) Extract ...OSversion.csv files data
                   </button>&nbsp;
                 </div>
+              </div>
+            </div> {/* panel-info */}
+            {/* ===================================================================================================================== */}
+          </div>
+        </div>
+        {/* ===================================================================================================================== */}
+        <div className="container">
+          <div className="panel panel-primary">
+          {/* ===================================================================================================================== */}
+          <div className="panel panel-info">
+            <div className="panel-heading">Combine Data for All Apps and Save as Json file</div>
+              <div className="panel-body">
+                <div className="btn-toolbar" role="group" aria-label="Basic example">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.onCombineDataAndSave}
+                  >Combine Data And Save</button>&nbsp;
+                </div>
+                <br/>
+                <div className="form-group">
+                  <label className="col-sm-2 control-label" htmlFor="jsonDataFile">Data Saved As: </label>
+                  <div className="form-text" id="jsonDataFile" placeholder="jsonDataFile" >{jsonDataFile}</div>
+                </div> {/* form-group */}
               </div>
             </div> {/* panel-info */}
             {/* ===================================================================================================================== */}
