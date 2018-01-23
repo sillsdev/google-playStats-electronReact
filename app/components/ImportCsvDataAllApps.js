@@ -21,7 +21,10 @@ class ImportCsvDataAllApps extends Component {
     appsFolderSelected: boolean,
     appsFolder: string,
 
-    listOfAppTitles : array
+    listOfAppTitles : array,
+    titleFromScraperApp: string,
+    totalNumberOfWBTApps: string,
+    numberOfAppTitlesProcessed: string
 
   }
   constructor() {
@@ -38,7 +41,10 @@ class ImportCsvDataAllApps extends Component {
       appsFolderSelected: false,
       appsFolder: 'appsFolder',
 
-      listOfAppTitles: []
+      listOfAppTitles: [],
+      titleFromScraperApp: '',
+      totalNumberOfWBTApps: 'no count yet',
+      numberOfAppTitlesProcessed: 'none yet'
     };
   }
   onSelectAppsFolder= () =>  {
@@ -150,6 +156,7 @@ class ImportCsvDataAllApps extends Component {
       if (err) {
           return console.log('Unable to scan directory: ' + err);
       }
+      this.setState({ totalNumberOfWBTApps: files.length});
       Promise.all(
           Array.from(files).map(entry => this.getAppDataFromOverviewFile(entry))
       ).then(() => {
@@ -257,7 +264,9 @@ class ImportCsvDataAllApps extends Component {
           let appInfo = { "packageName": appPackageName, "title": value.title};
           appTitles.push(appInfo);
           console.log('App Title gplay--> ' + value.title);
+          this.setState({ titleFromScraperApp: value.title });
           this.setState({ listOfAppTitles: appTitles });
+          this.setState({numberOfAppTitlesProcessed : appTitles.length});
         }).catch( (fromReject) => {
           console.log('A REJECT promise occured while running google-play-scraper for ')
           console.log('this package because it is UNPUBLISHED but has some installs -->');
@@ -267,13 +276,20 @@ class ImportCsvDataAllApps extends Component {
           let appTitles = this.state.listOfAppTitles;
           let appInfo = { "packageName": appPackageName,  "title": 'UNPUBLISHED'};
           appTitles.push(appInfo);
+          this.setState({ titleFromScraperApp: 'UNPUBLISHED' });
           this.setState({ listOfAppTitles: appTitles });
+          this.setState({numberOfAppTitlesProcessed : appTitles.length});
         });
     console.log('leaving getGooglePlayAppResults');
   } //================= getGooglePlayAppResults
 
 
   render() {
+    let numberOfAppTitlesProcessed = this.state.numberOfAppTitlesProcessed;
+    let totalNumberOfApps = this.state.totalNumberOfWBTApps;
+    let currentAppTitle = 'currentAppTitle';
+    if (this.state.titleFromScraperApp != '')
+    currentAppTitle = this.state.titleFromScraperApp;
     return (
       <div className="container">
         {/* ===================================================================================================================== */}
@@ -302,6 +318,17 @@ class ImportCsvDataAllApps extends Component {
                       >3) Run Scraper for App Titles
                   </button>&nbsp;
                 </div>
+                <br/>
+                <div className="form-group">
+                  <label className="col-sm-4 control-label" htmlFor="currentAppTitle">Current App Title</label>
+                  <div className="form-text" id="currentAppTitle" placeholder="currentAppTitle" >{currentAppTitle}</div>
+                  <br/>
+                  <label className="col-sm-4 control-label" htmlFor="totalNumberOfApps">Total Number of Apps to Process</label>
+                  <div className="form-text" id="totalNumberOfApps" placeholder="totalNumberOfApps" >{totalNumberOfApps}</div>
+                  <br/>
+                  <label className="col-sm-4 control-label" htmlFor="numberOfAppTitlesProcessed">Number of App Titles Processed</label>
+                  <div className="form-text" id="numberOfAppTitlesProcessed" placeholder="numberOfAppTitlesProcessed" >{numberOfAppTitlesProcessed}</div>
+                </div> {/* form-group */}
               </div>
             </div> {/* panel-info */}
             {/* ===================================================================================================================== */}
