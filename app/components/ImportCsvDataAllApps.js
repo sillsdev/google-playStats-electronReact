@@ -35,6 +35,7 @@ class ImportCsvDataAllApps extends Component {
     this.onProcessAllCountryFilesInFolder = this.onProcessAllCountryFilesInFolder.bind(this);
     this.onProcessAllOverviewFilesInFolder = this.onProcessAllOverviewFilesInFolder.bind(this);
     this.onProcessAllOSversionFilesInFolder = this.onProcessAllOSversionFilesInFolder.bind(this);
+    this.savePackageTitlesToArray = this.savePackageTitlesToArray.bind(this);
     this.state = {
       overviewDataAllApps: [],
       countryDataAllApps: [],
@@ -376,47 +377,6 @@ class ImportCsvDataAllApps extends Component {
           <div className="panel panel-primary">
           {/* ===================================================================================================================== */}
           <div className="panel panel-info">
-            <div className="panel-heading">Process data from all overview.csv files</div>
-              <div className="panel-body">
-                <div className="btn-toolbar" role="group" aria-label="Basic example">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.onSelectAppsFolder}
-                  >1) Select overview Folder for Apps</button>&nbsp;
-                  <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={this.onProcessAllOverviewFilesInFolder}
-                      >2) Extract ...overview.csv files data
-                  </button>&nbsp;
-                  <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={this.savePackageTitlesToArray}
-                      >3) Run Scraper for App Titles
-                  </button>&nbsp;
-                </div>
-                <br/>
-                <div className="form-group">
-                  <label className="col-sm-4 control-label" htmlFor="currentAppTitle">Current App Title</label>
-                  <div className="form-text" id="currentAppTitle" placeholder="currentAppTitle" >{currentAppTitle}</div>
-                  <br/>
-                  <label className="col-sm-4 control-label" htmlFor="totalNumberOfApps">Total Number of Apps to Process</label>
-                  <div className="form-text" id="totalNumberOfApps" placeholder="totalNumberOfApps" >{totalNumberOfApps}</div>
-                  <br/>
-                  <label className="col-sm-4 control-label" htmlFor="numberOfAppTitlesProcessed">Number of App Titles Processed</label>
-                  <div className="form-text" id="numberOfAppTitlesProcessed" placeholder="numberOfAppTitlesProcessed" >{numberOfAppTitlesProcessed}</div>
-                </div> {/* form-group */}
-              </div>
-            </div> {/* panel-info */}
-            {/* ===================================================================================================================== */}
-          </div>
-        </div>
-        <div className="container">
-          <div className="panel panel-primary">
-          {/* ===================================================================================================================== */}
-          <div className="panel panel-info">
             <div className="panel-heading">Process data from all countries.csv files</div>
               <div className="panel-body">
                 <div className="btn-toolbar" role="group" aria-label="Basic example">
@@ -457,6 +417,48 @@ class ImportCsvDataAllApps extends Component {
                       >2) Extract ...OSversion.csv files data
                   </button>&nbsp;
                 </div>
+              </div>
+            </div> {/* panel-info */}
+            {/* ===================================================================================================================== */}
+          </div>
+        </div>
+        {/* ===================================================================================================================== */}
+        <div className="container">
+          <div className="panel panel-primary">
+          {/* ===================================================================================================================== */}
+          <div className="panel panel-info">
+            <div className="panel-heading">Process data from all overview.csv files</div>
+              <div className="panel-body">
+                <div className="btn-toolbar" role="group" aria-label="Basic example">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.onSelectAppsFolder}
+                  >1) Select overview Folder for Apps</button>&nbsp;
+                  <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={this.onProcessAllOverviewFilesInFolder}
+                      >2) Extract ...overview.csv files data
+                  </button>&nbsp;
+                  <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={this.savePackageTitlesToArray}
+                      >3) Run Scraper for App Titles
+                  </button>&nbsp;
+                </div>
+                <br/>
+                <div className="form-group">
+                  <label className="col-sm-4 control-label" htmlFor="currentAppTitle">Current App Title</label>
+                  <div className="form-text" id="currentAppTitle" placeholder="currentAppTitle" >{currentAppTitle}</div>
+                  <br/>
+                  <label className="col-sm-4 control-label" htmlFor="totalNumberOfApps">Total Number of Apps to Process</label>
+                  <div className="form-text" id="totalNumberOfApps" placeholder="totalNumberOfApps" >{totalNumberOfApps}</div>
+                  <br/>
+                  <label className="col-sm-4 control-label" htmlFor="numberOfAppTitlesProcessed">Number of App Titles Processed</label>
+                  <div className="form-text" id="numberOfAppTitlesProcessed" placeholder="numberOfAppTitlesProcessed" >{numberOfAppTitlesProcessed}</div>
+                </div> {/* form-group */}
               </div>
             </div> {/* panel-info */}
             {/* ===================================================================================================================== */}

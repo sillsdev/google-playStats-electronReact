@@ -15,6 +15,44 @@ And then install dependencies.
 ```bash
 $ cd your-project-name && npm install
 ```
+
+cd your-project-name && npm install (this did not work)
+download and install     yarn
+run yarn
+```bash
+$ yarn
+```
+
+=======================================================================
+Create the following folders to hold the files that get downloaded from play.google.com
+```bash
+../app/components/gsutil-download-countries-files
+../app/components/gsutil-download-osversion-files
+../app/components/gsutil-download-overview-files
+```
+
+********* NOTE *******
+to ensure changes get into the running build
+first do
+```bash
+$ npm start
+```
+then
+```bash
+$ npm run dev
+```
+I ran into issues where just doing (npm run dev) did not have the latest changes in it.
+
+------------------------
+For how to use Papaparse
+https://stackoverflow.com/questions/42628426/read-local-csv-with-relative-path-in-reactjs
+
+
+-------------------------Loading the json data files
+```bash
+npm install --save-dev json-loader
+```
+
 ## Run
 
 Start the app in the `dev` environment. This starts the renderer process in [**hot-module-replacement**](https://webpack.js.org/guides/hmr-react/) mode and starts a server sends hot updates to the renderer process:
